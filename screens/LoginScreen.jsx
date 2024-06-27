@@ -7,23 +7,26 @@ const LoginScreen = ({ navigation }) => {
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    // Add login logic here
+    // Agrega la lógica de inicio de sesión aquí
     Alert.alert('Login Successful', 'You have logged in successfully.');
-    navigation.navigate('Home'); // Navigate to the home screen after login
+    navigation.navigate('Home'); // Navegar a la pantalla principal después del inicio de sesión
   };
 
   const handleRegister = () => {
-    navigation.navigate('Register'); // Navigate to the registration screen
+    navigation.navigate('Register'); // Navegar a la pantalla de registro
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
+      <Text style={styles.title}>Welcome Back</Text>
+      <Text style={styles.subtitle}>Please sign in to continue</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
       />
       <TextInput
         style={styles.input}
@@ -31,6 +34,7 @@ const LoginScreen = ({ navigation }) => {
         value={password}
         onChangeText={setPassword}
         secureTextEntry
+        autoCapitalize="none"
       />
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
@@ -45,40 +49,50 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#fff',
+    padding: 20,
+    backgroundColor: '#f7f7f7',
+    justifyContent: 'center',
   },
   title: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: 'bold',
-    marginBottom: 20,
+    color: '#333',
     textAlign: 'center',
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 18,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 30,
   },
   input: {
-    height: 40,
-    borderColor: '#ccc',
+    height: 50,
+    borderColor: '#ddd',
     borderWidth: 1,
-    marginBottom: 12,
-    paddingLeft: 8,
-    borderRadius: 4,
+    marginBottom: 20,
+    paddingHorizontal: 15,
+    borderRadius: 25,
+    backgroundColor: '#fff',
   },
   button: {
-    backgroundColor: 'blue',
-    padding: 10,
-    borderRadius: 8,
+    backgroundColor: '#007BFF',
+    paddingVertical: 15,
+    borderRadius: 25,
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 20,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
   },
   registerText: {
-    color: 'blue',
-    fontSize: 14,
+    color: '#007BFF',
+    fontSize: 16,
     textAlign: 'center',
   },
 });
 
 export default LoginScreen;
+

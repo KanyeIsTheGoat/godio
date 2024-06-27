@@ -1,6 +1,5 @@
-// screens/AddReclamosScreen.js
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ScrollView } from 'react-native';
 
 const AddReclamosScreen = ({ navigation }) => {
   const [title, setTitle] = useState('');
@@ -19,7 +18,7 @@ const AddReclamosScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Add Reclamo</Text>
       <TextInput
         style={styles.input}
@@ -44,6 +43,7 @@ const AddReclamosScreen = ({ navigation }) => {
         placeholder="Description"
         value={description}
         onChangeText={setDescription}
+        multiline
       />
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.buttonAccept} onPress={handleAccept}>
@@ -53,57 +53,68 @@ const AddReclamosScreen = ({ navigation }) => {
           <Text style={styles.buttonText}>Cancel</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: '#fff',
+    flexGrow: 1,
+    padding: 20,
+    backgroundColor: '#f7f7f7',
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
+    color: '#333',
     marginBottom: 20,
     textAlign: 'center',
   },
   input: {
-    height: 40,
+    height: 50,
     borderColor: '#ccc',
     borderWidth: 1,
-    marginBottom: 12,
-    paddingLeft: 8,
-    borderRadius: 4,
+    marginBottom: 15,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    fontSize: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 20,
+    justifyContent: 'space-between',
+    marginTop: 30,
   },
   buttonAccept: {
-    backgroundColor: 'green',
-    padding: 10,
+    backgroundColor: '#007BFF',
+    paddingVertical: 15,
+    paddingHorizontal: 30,
     borderRadius: 8,
     alignItems: 'center',
     flex: 1,
-    marginRight: 5,
+    marginRight: 10,
   },
   buttonCancel: {
-    backgroundColor: 'red',
-    padding: 10,
+    backgroundColor: '#dc3545',
+    paddingVertical: 15,
+    paddingHorizontal: 30,
     borderRadius: 8,
     alignItems: 'center',
     flex: 1,
-    marginLeft: 5,
+    marginLeft: 10,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
   },
 });
 
 export default AddReclamosScreen;
+
 

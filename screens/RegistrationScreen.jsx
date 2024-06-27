@@ -8,18 +8,19 @@ const RegistrationScreen = ({ navigation }) => {
   const [password, setPassword] = useState('');
 
   const handleRegister = () => {
-    // Add registration logic here
+    // Agrega la lógica de registro aquí
     Alert.alert('Registration Successful', 'You have registered successfully.');
-    navigation.navigate('Login'); // Navigate to the login screen after registration
+    navigation.navigate('Login'); // Navegar a la pantalla de inicio de sesión después del registro
   };
 
   const handleCancel = () => {
-    navigation.goBack(); // Navigate back to the login screen
+    navigation.goBack(); // Navegar de vuelta a la pantalla de inicio de sesión
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Register</Text>
+      <Text style={styles.title}>Create an Account</Text>
+      <Text style={styles.subtitle}>Join us to get started</Text>
       <TextInput
         style={styles.input}
         placeholder="Name"
@@ -31,6 +32,8 @@ const RegistrationScreen = ({ navigation }) => {
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
       />
       <TextInput
         style={styles.input}
@@ -38,13 +41,14 @@ const RegistrationScreen = ({ navigation }) => {
         value={password}
         onChangeText={setPassword}
         secureTextEntry
+        autoCapitalize="none"
       />
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={handleRegister}>
           <Text style={styles.buttonText}>Register</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.buttonCancel} onPress={handleCancel}>
-          <Text style={styles.buttonText}>Cancel</Text>
+          <Text style={styles.buttonCancelText}>Cancel</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -54,47 +58,63 @@ const RegistrationScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#fff',
+    padding: 20,
+    backgroundColor: '#f7f7f7',
+    justifyContent: 'center',
   },
   title: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: 'bold',
-    marginBottom: 20,
+    color: '#333',
     textAlign: 'center',
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 18,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 30,
   },
   input: {
-    height: 40,
-    borderColor: '#ccc',
+    height: 50,
+    borderColor: '#ddd',
     borderWidth: 1,
-    marginBottom: 12,
-    paddingLeft: 8,
-    borderRadius: 4,
+    marginBottom: 20,
+    paddingHorizontal: 15,
+    borderRadius: 25,
+    backgroundColor: '#fff',
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     marginTop: 20,
   },
   button: {
-    backgroundColor: 'blue',
-    padding: 10,
-    borderRadius: 8,
+    backgroundColor: '#007BFF',
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 25,
     alignItems: 'center',
     flex: 1,
-    marginRight: 5,
+    marginRight: 10,
   },
   buttonCancel: {
-    backgroundColor: 'red',
-    padding: 10,
-    borderRadius: 8,
+    backgroundColor: '#dc3545',
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 25,
     alignItems: 'center',
     flex: 1,
-    marginLeft: 5,
+    marginLeft: 10,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  buttonCancelText: {
+    color: '#fff',
+    fontSize: 18,
     fontWeight: 'bold',
   },
 });

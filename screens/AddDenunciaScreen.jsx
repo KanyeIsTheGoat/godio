@@ -142,11 +142,11 @@ const AddDenunciaScreen = ({ navigation }) => {
         onChangeText={setPlace}
       />
       <Picker
-        selectedValue={type}
+        selectedValue= {type}
         onValueChange={(itemValue) => setType(itemValue)}
         style={styles.picker}
       >
-        <Picker.Item label="Seleccionar Tipo de Denuncia" value="" />
+        
         <Picker.Item label="Vecino" value="Vecino" />
         <Picker.Item label="Inspector" value="Inspector" />
         <Picker.Item label="Sitio" value="Sitio" />
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
-    color: '#1E90FF',
+    color: 'black',
   },
   input: {
     height: 40,
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   buttonAccept: {
-    backgroundColor: 'green',
+    backgroundColor: '#007BFF',
     padding: 10,
     borderRadius: 8,
     alignItems: 'center',

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Button, TextInput } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { fetchDenuncias } from '../api/denuncias';
 
 const DenunciasScreen = ({ navigation }) => {
@@ -44,11 +45,9 @@ const DenunciasScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={toggleFilterVisibility}>
-          <Text style={styles.icon}>🔍</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity style={styles.filterButton} onPress={toggleFilterVisibility}>
+        <Ionicons name="filter-outline" size={24} color="black" />
+      </TouchableOpacity>
       {filterVisible && (
         <View style={styles.filterContainer}>
           <TextInput
@@ -63,10 +62,11 @@ const DenunciasScreen = ({ navigation }) => {
             value={filters.type}
             onChangeText={text => setFilters({ ...filters, type: text })}
           />
-          <Button title="Aplicar Filtros" onPress={applyFilters} color="#1E90FF" />
+          <TouchableOpacity style={styles.applyButton} onPress={applyFilters}>
+            <Text style={styles.applyButtonText}>Aplicar Filtros</Text>
+          </TouchableOpacity>
         </View>
       )}
-      <Text style={styles.title}>Denuncias</Text>
       <FlatList
         data={filteredDenuncias}
         renderItem={renderDenunciaItem}
@@ -85,57 +85,60 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#f7f7f7',
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+  filterButton: {
+    alignItems: 'flex-end',
     marginBottom: 10,
   },
-  icon: {
-    fontSize: 24,
-    color: '#1E90FF',
-  },
   filterContainer: {
+    marginBottom: 10,
     padding: 16,
-    backgroundColor: '#FFF',
+    backgroundColor: '#fff',
     borderRadius: 8,
-    marginBottom: 20,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.3,
+    shadowRadius: 1,
+    elevation: 3,
   },
   input: {
     height: 40,
-    borderColor: '#1E90FF',
+    borderColor: '#ccc',
     borderWidth: 1,
-    borderRadius: 8,
     paddingHorizontal: 8,
     marginBottom: 10,
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    elevation: 2, // Added slight elevation for a modern look
   },
-  title: {
-    fontSize: 24,
+  applyButton: {
+    backgroundColor: '#007BFF',
+    padding: 8,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  applyButtonText: {
+    color: '#fff',
+    fontSize: 14,
     fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-    color: '#1E90FF',
   },
   denunciaItem: {
     padding: 16,
-    backgroundColor: '#FFF',
+    backgroundColor: '#fff',
     borderRadius: 8,
     marginBottom: 10,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.3,
+    shadowRadius: 1,
+    elevation: 3,
   },
   denunciaTitle: {
     fontSize: 18,
     fontWeight: 'bold',
+    marginBottom: 5,
     color: '#333',
   },
   denunciaDescription: {
@@ -143,17 +146,24 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   addButton: {
-    backgroundColor: '#1E90FF',
-    padding: 16,
-    borderRadius: 8,
+    backgroundColor: '#007BFF', // Cambiado al azul de la app
+    paddingVertical: 10,
+    paddingHorizontal: 15, // Ajustado para acortar de izquierda y derecha
+    borderRadius: 20, // Más redondeado
     alignItems: 'center',
     marginTop: 20,
   },
   addButtonText: {
-    color: '#FFF',
-    fontSize: 18,
+    color: '#fff',
+    fontSize: 16,
     fontWeight: 'bold',
   },
+  
 });
 
 export default DenunciasScreen;
+
+
+
+
+

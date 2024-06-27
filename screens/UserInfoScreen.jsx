@@ -3,31 +3,29 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 
 const UserInfoScreen = ({ navigation }) => {
-  // Replace these with actual user data
+  // Reemplaza estos valores con datos reales del usuario
   const userName = "John Doe";
   const userEmail = "john.doe@example.com";
 
   const handleMisDenuncias = () => {
-    // Navigate to Mis Denuncias screen
+    // Navegar a la pantalla Mis Denuncias
     navigation.navigate('MisDenuncias');
   };
 
   const handleMisReclamos = () => {
-    // Navigate to Mis Reclamos screen
+    // Navegar a la pantalla Mis Reclamos
     navigation.navigate('MisReclamos');
   };
 
   const handleCerrarSesion = () => {
-    // Handle logout logic and navigate to the login page
+    // Manejar la lógica de cierre de sesión y navegar a la pantalla de inicio de sesión
     Alert.alert('Cerrar Sesión', 'Has cerrado sesión exitosamente.');
-    navigation.navigate('Login'); // Replace 'Login' with the actual name of your login screen
+    navigation.navigate('Login'); // Reemplaza 'Login' con el nombre real de tu pantalla de inicio de sesión
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>User Information</Text>
-      <Text style={styles.userInfo}>Name: {userName}</Text>
-      <Text style={styles.userInfo}>Email: {userEmail}</Text>
+      <Text style={styles.title}>Hola {userName}!</Text>
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={handleMisDenuncias}>
           <Text style={styles.buttonText}>Mis Denuncias</Text>
@@ -36,7 +34,7 @@ const UserInfoScreen = ({ navigation }) => {
           <Text style={styles.buttonText}>Mis Reclamos</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.buttonLogout} onPress={handleCerrarSesion}>
-          <Text style={styles.buttonText}>Cerrar Sesión</Text>
+          <Text style={styles.buttonLogoutText}>Cerrar Sesión</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -46,46 +44,51 @@ const UserInfoScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#fff',
+    padding: 20,
+    backgroundColor: '#f7f7f7',
+    justifyContent: 'center',
   },
   title: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: 'bold',
-    marginBottom: 20,
+    color: '#333',
     textAlign: 'center',
-  },
-  userInfo: {
-    fontSize: 18,
-    marginBottom: 10,
+    marginBottom: 20,
   },
   buttonContainer: {
-    flex: 1,
-    justifyContent: 'center',
+    marginTop: 20,
     alignItems: 'center',
   },
   button: {
-    backgroundColor: 'blue',
-    padding: 10,
-    borderRadius: 8,
+    backgroundColor: '#007BFF',
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 25,
     alignItems: 'center',
     width: '80%',
     marginVertical: 10,
   },
   buttonLogout: {
-    backgroundColor: 'red',
-    padding: 10,
-    borderRadius: 8,
+    backgroundColor: '#dc3545',
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 25,
     alignItems: 'center',
     width: '80%',
     marginVertical: 10,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: 'bold', 
+  },
+  buttonLogoutText: {
+    color: '#fff',
+    fontSize: 18,
     fontWeight: 'bold',
   },
 });
 
 export default UserInfoScreen;
+
 
