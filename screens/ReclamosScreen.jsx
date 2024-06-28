@@ -9,6 +9,12 @@ const ReclamosScreen = ({ navigation }) => {
   const reclamos = [
     { id: '1', title: 'Reclamo 1', type: 'Type 1', address: 'Address A', description: 'Description A' },
     { id: '2', title: 'Reclamo 2', type: 'Type 2', address: 'Address B', description: 'Description B' },
+    { id: '2', title: 'Reclamo 2', type: 'Type 2', address: 'Address B', description: 'Description B' },
+    { id: '2', title: 'Reclamo 2', type: 'Type 2', address: 'Address B', description: 'Description B' },
+    { id: '2', title: 'Reclamo 2', type: 'Type 2', address: 'Address B', description: 'Description B' },
+    { id: '2', title: 'Reclamo 2', type: 'Type 2', address: 'Address B', description: 'Description B' },
+    { id: '2', title: 'Reclamo 2', type: 'Type 2', address: 'Address B', description: 'Description B' },
+
   ];
 
   const filteredReclamos = reclamos.filter(

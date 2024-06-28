@@ -1,82 +1,173 @@
-// screens/HomeScreen.js
-import React from 'react';
-import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-import PromocionesScreen from './PromocionesScreen';
-import ReclamosScreen from './ReclamosScreen';
-import DenunciasScreen from './DenunciasScreen';
+const Drawer = createDrawerNavigator();
 
-const Tab = createBottomTabNavigator();
+const CustomDrawerContent = (props) => {
+  const navigation = useNavigation();
+
+  return (
+    <DrawerContentScrollView {...props} style={styles.drawerContent}>
+      <DrawerItemList {...props} />
+      <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('Profile')}>
+        <Text style={styles.drawerLabel}>Profile</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('Promociones')}>
+        <Text style={styles.drawerLabel}>Promotions</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('Denuncias')}>
+        <Text style={styles.drawerLabel}>Denuncias</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('Reclamos')}>
+        <Text style={styles.drawerLabel}>Reclamos</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('Login')}>
+        <Text style={styles.drawerLabel}>Log Out</Text>
+      </TouchableOpacity>
+    </DrawerContentScrollView>
+  );
+};
 
 const HomeScreen = ({ navigation }) => {
+  const [activeMenu, setActiveMenu] = useState('');
+
+  const handleMenuPress = (menu) => {
+    setActiveMenu(menu);
+    navigation.navigate(menu);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.navigate('UserInfo')}>
-          <Ionicons name="person-circle-outline" size={32} color="black" />
+        <TouchableOpacity onPress={() => navigation.openDrawer()}>
+          <Icon name="menu" size={30} color="#FFFFFF" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Home</Text>
         <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
-          <Ionicons name="notifications-outline" size={32} color="black" />
+          <Icon name="notifications" size={30} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ color, size }) => {
-            let iconName;
-
-            if (route.name === 'Promociones') {
-              iconName = 'pricetag-outline';
-            } else if (route.name === 'Reclamos') {
-              iconName = 'alert-circle-outline';
-            } else if (route.name === 'Denuncias') {
-              iconName = 'megaphone-outline';
-            }
-
-            return <Ionicons name={iconName} size={size} color={color} />;
-          },
-          tabBarActiveTintColor: '#000080',
-          tabBarInactiveTintColor: 'gray',
-          tabBarShowLabel: true, 
-          tabBarStyle: {
-            backgroundColor: '#fff',
-            borderTopWidth: 0,
-            elevation: 0,
-          },
-        })}
-      >
-        <Tab.Screen name="Promociones" component={PromocionesScreen} />
-        <Tab.Screen name="Reclamos" component={ReclamosScreen} />
-        <Tab.Screen name="Denuncias" component={DenunciasScreen} />
-      </Tab.Navigator>
+      <View style={styles.content}>
+        <Text style={styles.welcomeMessage}>Welcome to the App!</Text>
+        <View style={styles.imagePlaceholder}>
+          <Text>Picture goes here</Text>
+        </View>
+      </View>
+      <View style={styles.menu}>
+        <TouchableOpacity
+          style={[
+            styles.menuItem,
+            activeMenu === 'Promociones' && styles.menuItemActive,
+          ]}
+          onPress={() => handleMenuPress('Promociones')}
+        >
+          <Icon name="pricetag" size={30} color="#FFFFFF" />
+          <Text style={styles.menuLabel}>Promotions</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.menuItem,
+            activeMenu === 'Denuncias' && styles.menuItemActive,
+          ]}
+          onPress={() => handleMenuPress('Denuncias')}
+        >
+          <Icon name="warning" size={30} color="#FFFFFF" />
+          <Text style={styles.menuLabel}>Denuncias</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.menuItem,
+            activeMenu === 'Reclamos' && styles.menuItemActive,
+          ]}
+          onPress={() => handleMenuPress('Reclamos')}
+        >
+          <Icon name="document-text" size={30} color="#FFFFFF" />
+          <Text style={styles.menuLabel}>Reclamos</Text>
+        </TouchableOpacity>
+      </View>
     </View>
+  );
+};
+
+const HomeNavigator = () => {
+  return (
+    <Drawer.Navigator drawerContent={(props) => <CustomDrawerContent {...props} />} screenOptions={{ drawerStyle: styles.drawerStyle }}>
+      <Drawer.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+    </Drawer.Navigator>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f7f7f7',
+    backgroundColor: '#1F1F1F',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    padding: 20,
+    backgroundColor: '#333333',
   },
   headerTitle: {
+    fontSize: 18,
+    color: '#FFFFFF',
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  welcomeMessage: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: 'black',
-    fontFamily: 'Helvetica', // Cambia esta propiedad según la fuente que prefieras
+    color: '#FFFFFF',
+    marginBottom: 20,
+  },
+  imagePlaceholder: {
+    width: 150,
+    height: 150,
+    backgroundColor: '#555555',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  menu: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 20,
+    backgroundColor: '#333333',
+  },
+  menuItem: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    borderRadius: 10,
+  },
+  menuItemActive: {
+    backgroundColor: '#007BFF',
+  },
+  menuLabel: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    marginTop: 5,
+  },
+  drawerContent: {
+    backgroundColor: '#1F1F1F',
+  },
+  drawerItem: {
+    padding: 15,
+  },
+  drawerLabel: {
+    color: '#FFFFFF',
+    fontSize: 16,
+  },
+  drawerStyle: {
+    backgroundColor: '#1F1F1F',
   },
 });
 
-export default HomeScreen;
-
+export default HomeNavigator;
 

@@ -1,4 +1,3 @@
-// screens/PromocionDetailScreen.js
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
@@ -19,23 +18,18 @@ const PromocionDetailScreen = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#fff',
+    padding: 20,
+    backgroundColor: '#1F1F1F',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
+    color: '#FFFFFF',
+    marginBottom: 10,
   },
-  label: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginTop: 10,
-  },
-  value: {
+  description: {
     fontSize: 16,
-    color: '#666',
+    color: '#9A9A9A',
   },
 });
 
