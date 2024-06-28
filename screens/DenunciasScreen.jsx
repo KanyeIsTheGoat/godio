@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { fetchDenuncias } from '../api/denuncias';
 
 const DenunciasScreen = ({ navigation }) => {
-  const [filterVisible, setFilterVisible] = useState(false);
+  const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [filters, setFilters] = useState({ title: '', type: '' });
   const [denuncias, setDenuncias] = useState([]);
 
@@ -36,47 +36,68 @@ const DenunciasScreen = ({ navigation }) => {
   );
 
   const toggleFilterVisibility = () => {
-    setFilterVisible(!filterVisible);
+    setFilterModalVisible(!filterModalVisible);
   };
 
   const applyFilters = () => {
-    setFilterVisible(false);
+    setFilterModalVisible(false);
   };
 
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.filterButton} onPress={toggleFilterVisibility}>
-        <Ionicons name="filter-outline" size={24} color="black" />
+        <Ionicons name="filter-outline" size={24} color="white" />
       </TouchableOpacity>
-      {filterVisible && (
-        <View style={styles.filterContainer}>
-          <TextInput
-            placeholder="Título"
-            style={styles.input}
-            value={filters.title}
-            onChangeText={text => setFilters({ ...filters, title: text })}
-          />
-          <TextInput
-            placeholder="Tipo"
-            style={styles.input}
-            value={filters.type}
-            onChangeText={text => setFilters({ ...filters, type: text })}
-          />
-          <TouchableOpacity style={styles.applyButton} onPress={applyFilters}>
-            <Text style={styles.applyButtonText}>Aplicar Filtros</Text>
-          </TouchableOpacity>
-        </View>
-      )}
       <FlatList
         data={filteredDenuncias}
         renderItem={renderDenunciaItem}
         keyExtractor={item => item.idDenuncia.toString()}
+        contentContainerStyle={styles.listContentContainer}
+        ListFooterComponent={() => <View style={{ height: 20 }} />}
       />
-      <TouchableOpacity 
-        style={styles.addButton} 
-        onPress={() => navigation.navigate('AddDenuncia')}>
+      <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('AddDenuncia')}>
         <Text style={styles.addButtonText}>Añadir Denuncia</Text>
       </TouchableOpacity>
+      <View style={styles.menu}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Promociones')}>
+          <Ionicons name="pricetag" size={24} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Denuncias')}>
+          <Ionicons name="alert-circle" size={24} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Reclamos')}>
+          <Ionicons name="chatbubble" size={24} color="white" />
+        </TouchableOpacity>
+      </View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={filterModalVisible}
+        onRequestClose={() => setFilterModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalTitle}>Filtrar Denuncias</Text>
+            <TextInput
+              placeholder="Título"
+              style={styles.input}
+              value={filters.title}
+              onChangeText={text => setFilters({ ...filters, title: text })}
+              placeholderTextColor="#9A9A9A"
+            />
+            <TextInput
+              placeholder="Tipo"
+              style={styles.input}
+              value={filters.type}
+              onChangeText={text => setFilters({ ...filters, type: text })}
+              placeholderTextColor="#9A9A9A"
+            />
+            <TouchableOpacity style={styles.closeButton} onPress={applyFilters}>
+              <Text style={styles.closeButtonText}>Aplicar Filtros</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -84,84 +105,104 @@ const DenunciasScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#f7f7f7',
+    backgroundColor: '#1F1F1F',
   },
-  filterButton: {
-    alignItems: 'flex-end',
-    marginBottom: 10,
-  },
-  filterContainer: {
-    marginBottom: 10,
-    padding: 16,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.3,
-    shadowRadius: 1,
-    elevation: 3,
-  },
-  input: {
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    paddingHorizontal: 8,
-    marginBottom: 10,
-    borderRadius: 8,
-    backgroundColor: '#fff',
-    elevation: 2, // Added slight elevation for a modern look
-  },
-  applyButton: {
-    backgroundColor: '#007BFF',
-    padding: 8,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  applyButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: 'bold',
+  listContentContainer: {
+    paddingBottom: 150, // Ensures space for the add button and menu
+    paddingHorizontal: 10,
+    paddingTop: 60, // Add padding to ensure filter button is not over denuncias
   },
   denunciaItem: {
-    padding: 16,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    marginBottom: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.3,
-    shadowRadius: 1,
-    elevation: 3,
+    backgroundColor: '#333333',
+    paddingVertical: 20,
+    paddingHorizontal: 15,
+    marginVertical: 8,
+    borderRadius: 10,
+    marginHorizontal: 10,
   },
   denunciaTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
-    color: '#333',
+    color: '#FFFFFF',
   },
   denunciaDescription: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: 14,
+    color: '#9A9A9A',
   },
   addButton: {
-    backgroundColor: '#007BFF', // Cambiado al azul de la app
-    paddingVertical: 10,
-    paddingHorizontal: 15, // Ajustado para acortar de izquierda y derecha
-    borderRadius: 20, // Más redondeado
+    backgroundColor: '#007BFF',
+    padding: 15,
+    borderRadius: 10,
     alignItems: 'center',
-    marginTop: 20,
+    position: 'absolute',
+    bottom: 80,
+    left: 20,
+    right: 20,
   },
   addButtonText: {
-    color: '#fff',
+    color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: 'bold',
   },
-  
+  menu: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10,
+    backgroundColor: '#333333',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  menuItem: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 5,
+  },
+  filterButton: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    zIndex: 1,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalView: {
+    width: 300,
+    backgroundColor: '#333333',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 20,
+    marginBottom: 10,
+    color: '#FFFFFF',
+  },
+  input: {
+    height: 40,
+    backgroundColor: '#1F1F1F',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    color: '#FFFFFF',
+    width: '100%',
+    marginBottom: 20,
+  },
+  closeButton: {
+    backgroundColor: '#007BFF',
+    padding: 10,
+    borderRadius: 10,
+  },
+  closeButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+  },
 });
 
 export default DenunciasScreen;
+
 
 
 

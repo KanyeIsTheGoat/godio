@@ -1,4 +1,3 @@
-// screens/ReclamoDetailScreen.js
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
@@ -8,12 +7,14 @@ const ReclamoDetailScreen = ({ route }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{reclamo.title}</Text>
-      <Text style={styles.label}>Type:</Text>
-      <Text style={styles.value}>{reclamo.type}</Text>
-      <Text style={styles.label}>Address:</Text>
-      <Text style={styles.value}>{reclamo.address}</Text>
-      <Text style={styles.label}>Description:</Text>
-      <Text style={styles.value}>{reclamo.description}</Text>
+      <View style={styles.detailContainer}>
+        <Text style={styles.label}>Description:</Text>
+        <Text style={styles.value}>{reclamo.description}</Text>
+      </View>
+      <View style={styles.detailContainer}>
+        <Text style={styles.label}>Address:</Text>
+        <Text style={styles.value}>{reclamo.address}</Text>
+      </View>
     </View>
   );
 };
@@ -21,23 +22,31 @@ const ReclamoDetailScreen = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#fff',
+    padding: 20,
+    backgroundColor: '#1F1F1F',
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
+    color: '#FFFFFF',
     marginBottom: 20,
     textAlign: 'center',
+  },
+  detailContainer: {
+    marginBottom: 20,
   },
   label: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginTop: 10,
+    color: '#9A9A9A',
+    marginBottom: 5,
   },
   value: {
     fontSize: 16,
-    color: '#666',
+    color: '#FFFFFF',
+    backgroundColor: '#333333',
+    padding: 10,
+    borderRadius: 10,
   },
 });
 

@@ -1,26 +1,15 @@
-import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
-import { ScrollView } from 'react-native-web';
+import React, { useState } from 'react';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Modal, TextInput } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 const testData = [
   { id: '1', title: 'Promotion 1', description: 'Description of promotion 1' },
-  { id: '2', title: 'Promotion 2', description: 'Description of promotion 2' },
-  { id: '2', title: 'Promotion 2', description: 'Description of promotion 2' },
-  { id: '2', title: 'Promotion 2', description: 'Description of promotion 2' },
-  { id: '2', title: 'Promotion 2', description: 'Description of promotion 2' },
-  { id: '2', title: 'Promotion 2', description: 'Description of promotion 2' },
-  { id: '2', title: 'Promotion 2', description: 'Description of promotion 2' },
-  { id: '2', title: 'Promotion 2', description: 'Description of promotion 2' },
-  { id: '2', title: 'Promotion 2', description: 'Description of promotion 2' },
-  { id: '2', title: 'Promotion 2', description: 'Description of promotion 2' },
-  { id: '2', title: 'Promotion 2', description: 'Description of promotion 2' },
-
-
-
-
+  
 ];
 
 const PromocionesScreen = ({ navigation }) => {
+  const [filterModalVisible, setFilterModalVisible] = useState(false);
+
   const renderPromocionItem = ({ item }) => (
     <TouchableOpacity onPress={() => navigation.navigate('PromocionDetail', { promocion: item })}>
       <View style={styles.promocionItem}>
@@ -31,8 +20,10 @@ const PromocionesScreen = ({ navigation }) => {
   );
 
   return (
-    <ScrollView>
     <View style={styles.container}>
+      <TouchableOpacity style={styles.filterButton} onPress={() => setFilterModalVisible(true)}>
+        <Ionicons name="filter" size={24} color="white" />
+      </TouchableOpacity>
       <FlatList
         data={testData}
         renderItem={renderPromocionItem}
@@ -43,23 +34,52 @@ const PromocionesScreen = ({ navigation }) => {
       <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('AddPromotion')}>
         <Text style={styles.addButtonText}>Add Promotion</Text>
       </TouchableOpacity>
+      <View style={styles.menu}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Promociones')}>
+          <Ionicons name="pricetag" size={24} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Denuncias')}>
+          <Ionicons name="alert-circle" size={24} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Reclamos')}>
+          <Ionicons name="chatbubble" size={24} color="white" />
+        </TouchableOpacity>
+      </View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={filterModalVisible}
+        onRequestClose={() => setFilterModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalTitle}>Filter Promotions</Text>
+            <TextInput style={styles.input} placeholder="Search by title" placeholderTextColor="#9A9A9A" />
+            <TextInput style={styles.input} placeholder="Filter by type" placeholderTextColor="#9A9A9A" />
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setFilterModalVisible(false)}
+            >
+              <Text style={styles.closeButtonText}>Apply Filters</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
-    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
+    flex: 1,
     backgroundColor: '#1F1F1F',
-    paddingTop: 20,
-    paddingHorizontal: 10,
   },
   listContentContainer: {
-    paddingBottom: 100, // Ensures space for the add button
+    paddingBottom: 150, // Ensures space for the add button and menu
+    paddingHorizontal: 10,
+    paddingTop: 60, // Add padding to ensure filter button is not over promotions
   },
   promocionItem: {
-    display: "flex",
     backgroundColor: '#333333',
     paddingVertical: 20,
     paddingHorizontal: 15,
@@ -80,9 +100,8 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
-    margin: 20,
     position: 'absolute',
-    bottom: 20,
+    bottom: 80,
     left: 20,
     right: 20,
   },
@@ -90,7 +109,63 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
   },
+  menu: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10,
+    backgroundColor: '#333333',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  menuItem: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 5,
+  },
+  filterButton: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    zIndex: 1,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalView: {
+    width: 300,
+    backgroundColor: '#333333',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 20,
+    marginBottom: 10,
+    color: '#FFFFFF',
+  },
+  input: {
+    height: 40,
+    backgroundColor: '#1F1F1F',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    color: '#FFFFFF',
+    width: '100%',
+    marginBottom: 20,
+  },
+  closeButton: {
+    backgroundColor: '#007BFF',
+    padding: 10,
+    borderRadius: 10,
+  },
+  closeButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+  },
 });
 
 export default PromocionesScreen;
-

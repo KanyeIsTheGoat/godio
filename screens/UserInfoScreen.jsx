@@ -1,94 +1,98 @@
-// screens/UserInfoScreen.js
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 
 const UserInfoScreen = ({ navigation }) => {
-  // Reemplaza estos valores con datos reales del usuario
-  const userName = "John Doe";
-  const userEmail = "john.doe@example.com";
-
-  const handleMisDenuncias = () => {
-    // Navegar a la pantalla Mis Denuncias
-    navigation.navigate('MisDenuncias');
+  const user = {
+    name: 'John Doe',
+    email: 'johndoe@example.com',
   };
 
-  const handleMisReclamos = () => {
-    // Navegar a la pantalla Mis Reclamos
-    navigation.navigate('MisReclamos');
-  };
-
-  const handleCerrarSesion = () => {
-    // Manejar la lógica de cierre de sesión y navegar a la pantalla de inicio de sesión
-    Alert.alert('Cerrar Sesión', 'Has cerrado sesión exitosamente.');
-    navigation.navigate('Login'); // Reemplaza 'Login' con el nombre real de tu pantalla de inicio de sesión
+  const handleLogout = () => {
+    // Log out logic here
+    console.log('User logged out');
+    navigation.navigate('Login');
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Hola {userName}!</Text>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleMisDenuncias}>
-          <Text style={styles.buttonText}>Mis Denuncias</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleMisReclamos}>
-          <Text style={styles.buttonText}>Mis Reclamos</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonLogout} onPress={handleCerrarSesion}>
-          <Text style={styles.buttonLogoutText}>Cerrar Sesión</Text>
-        </TouchableOpacity>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.title}>User Profile</Text>
+      <View style={styles.detailContainer}>
+        <Text style={styles.label}>Name:</Text>
+        <Text style={styles.value}>{user.name}</Text>
       </View>
-    </View>
+      <View style={styles.detailContainer}>
+        <Text style={styles.label}>Email:</Text>
+        <Text style={styles.value}>{user.email}</Text>
+      </View>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('MisDenuncias')}
+      >
+        <Text style={styles.buttonText}>Mis Denuncias</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('MisReclamos')}
+      >
+        <Text style={styles.buttonText}>Mis Reclamos</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.buttonLogout} onPress={handleLogout}>
+        <Text style={styles.buttonText}>Log Out</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     padding: 20,
-    backgroundColor: '#f7f7f7',
-    justifyContent: 'center',
+    backgroundColor: '#1F1F1F',
   },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#FFFFFF',
+    marginBottom: 20,
     textAlign: 'center',
+  },
+  detailContainer: {
     marginBottom: 20,
   },
-  buttonContainer: {
-    marginTop: 20,
-    alignItems: 'center',
+  label: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#9A9A9A',
+    marginBottom: 5,
+  },
+  value: {
+    fontSize: 16,
+    color: '#FFFFFF',
+    backgroundColor: '#333333',
+    padding: 10,
+    borderRadius: 10,
   },
   button: {
     backgroundColor: '#007BFF',
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 25,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
     alignItems: 'center',
-    width: '80%',
-    marginVertical: 10,
+    marginTop: 20,
   },
   buttonLogout: {
     backgroundColor: '#dc3545',
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 25,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
     alignItems: 'center',
-    width: '80%',
-    marginVertical: 10,
+    marginTop: 20,
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold', 
-  },
-  buttonLogoutText: {
-    color: '#fff',
-    fontSize: 18,
+    color: '#FFF',
+    fontSize: 16,
     fontWeight: 'bold',
   },
 });
 
 export default UserInfoScreen;
-
-

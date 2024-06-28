@@ -51,10 +51,8 @@ const HomeScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
       <View style={styles.content}>
-        <Text style={styles.welcomeMessage}>Welcome to the App!</Text>
-        <View style={styles.imagePlaceholder}>
-          <Text>Picture goes here</Text>
-        </View>
+        <Text style={styles.welcomeMessage}>Municipalidad de San Isidro</Text>
+        <Image source={require('C:/Users/bauti/ProyectosReact/godio/assets/municipio.jpg')} style={styles.image} />
       </View>
       <View style={styles.menu}>
         <TouchableOpacity
@@ -64,7 +62,7 @@ const HomeScreen = ({ navigation }) => {
           ]}
           onPress={() => handleMenuPress('Promociones')}
         >
-          <Icon name="pricetag" size={30} color="#FFFFFF" />
+          <Icon name="pricetag" size={20} color="#FFFFFF" />
           <Text style={styles.menuLabel}>Promotions</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -74,7 +72,7 @@ const HomeScreen = ({ navigation }) => {
           ]}
           onPress={() => handleMenuPress('Denuncias')}
         >
-          <Icon name="warning" size={30} color="#FFFFFF" />
+          <Icon name="warning" size={20} color="#FFFFFF" />
           <Text style={styles.menuLabel}>Denuncias</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -84,7 +82,7 @@ const HomeScreen = ({ navigation }) => {
           ]}
           onPress={() => handleMenuPress('Reclamos')}
         >
-          <Icon name="document-text" size={30} color="#FFFFFF" />
+          <Icon name="document-text" size={20} color="#FFFFFF" />
           <Text style={styles.menuLabel}>Reclamos</Text>
         </TouchableOpacity>
       </View>
@@ -120,30 +118,28 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 20,
   },
   welcomeMessage: {
-    fontSize: 24,
+    fontSize: 30,
     color: '#FFFFFF',
     marginBottom: 20,
   },
-  imagePlaceholder: {
-    width: 150,
-    height: 150,
-    backgroundColor: '#555555',
-    justifyContent: 'center',
-    alignItems: 'center',
+  image: {
+    width: '100%',
+    height: 300,
     borderRadius: 10,
   },
   menu: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    padding: 20,
+    padding: 10,
     backgroundColor: '#333333',
   },
   menuItem: {
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 10,
+    padding: 5,
     borderRadius: 10,
   },
   menuItemActive: {
@@ -151,7 +147,7 @@ const styles = StyleSheet.create({
   },
   menuLabel: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 12,
     marginTop: 5,
   },
   drawerContent: {
@@ -170,4 +166,3 @@ const styles = StyleSheet.create({
 });
 
 export default HomeNavigator;
-

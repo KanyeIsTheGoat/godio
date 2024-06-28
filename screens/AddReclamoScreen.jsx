@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ScrollView } from 'react-native';
 
-const AddReclamosScreen = ({ navigation }) => {
-  const [title, setTitle] = useState('');
-  const [faultType, setFaultType] = useState('');
-  const [address, setAddress] = useState('');
-  const [description, setDescription] = useState('');
+const AddReclamoScreen = ({ navigation }) => {
+  const [field1, setField1] = useState('');
+  const [field2, setField2] = useState('');
+  const [field3, setField3] = useState('');
+  const [field4, setField4] = useState('');
 
   const handleAccept = () => {
-    // Add logic to save the reclamo
+    // Logica para guardar el reclamo (conectar con backend en el futuro)
+    const newReclamo = { field1, field2, field3, field4 };
+    console.log(newReclamo); // Enviar esto al backend más adelante
     Alert.alert('Reclamo Added', 'The reclamo has been added successfully.');
-    navigation.goBack(); // Navigate back to the previous screen
+    navigation.goBack(); // Volver a la pantalla anterior
   };
 
   const handleCancel = () => {
-    navigation.goBack(); // Navigate back to the previous screen
+    navigation.goBack(); // Volver a la pantalla anterior
   };
 
   return (
@@ -22,28 +24,27 @@ const AddReclamosScreen = ({ navigation }) => {
       <Text style={styles.title}>Add Reclamo</Text>
       <TextInput
         style={styles.input}
-        placeholder="Title"
-        value={title}
-        onChangeText={setTitle}
+        placeholder="Field 1"
+        value={field1}
+        onChangeText={setField1}
       />
       <TextInput
         style={styles.input}
-        placeholder="Type of Fault"
-        value={faultType}
-        onChangeText={setFaultType}
+        placeholder="Field 2"
+        value={field2}
+        onChangeText={setField2}
       />
       <TextInput
         style={styles.input}
-        placeholder="Address"
-        value={address}
-        onChangeText={setAddress}
+        placeholder="Field 3"
+        value={field3}
+        onChangeText={setField3}
       />
       <TextInput
         style={styles.input}
-        placeholder="Description"
-        value={description}
-        onChangeText={setDescription}
-        multiline
+        placeholder="Field 4"
+        value={field4}
+        onChangeText={setField4}
       />
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.buttonAccept} onPress={handleAccept}>
@@ -61,12 +62,12 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 20,
-    backgroundColor: '#f7f7f7',
+    backgroundColor: '#1F1F1F',
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#FFFFFF',
     marginBottom: 20,
     textAlign: 'center',
   },
@@ -76,8 +77,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 15,
     paddingHorizontal: 15,
-    borderRadius: 8,
-    backgroundColor: '#fff',
+    borderRadius: 10,
+    backgroundColor: '#333333',
+    color: '#FFFFFF',
     fontSize: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -94,7 +96,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#007BFF',
     paddingVertical: 15,
     paddingHorizontal: 30,
-    borderRadius: 8,
+    borderRadius: 10,
     alignItems: 'center',
     flex: 1,
     marginRight: 10,
@@ -103,7 +105,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#dc3545',
     paddingVertical: 15,
     paddingHorizontal: 30,
-    borderRadius: 8,
+    borderRadius: 10,
     alignItems: 'center',
     flex: 1,
     marginLeft: 10,
@@ -115,6 +117,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddReclamosScreen;
-
-
+export default AddReclamoScreen;

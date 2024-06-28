@@ -7,10 +7,14 @@ const PromocionDetailScreen = ({ route }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{promocion.title}</Text>
-      <Text style={styles.label}>Description:</Text>
-      <Text style={styles.value}>{promocion.description}</Text>
-      <Text style={styles.label}>Address:</Text>
-      <Text style={styles.value}>{promocion.address}</Text>
+      <View style={styles.detailContainer}>
+        <Text style={styles.label}>Description:</Text>
+        <Text style={styles.value}>{promocion.description}</Text>
+      </View>
+      <View style={styles.detailContainer}>
+        <Text style={styles.label}>Address:</Text>
+        <Text style={styles.value}>{promocion.address}</Text>
+      </View>
     </View>
   );
 };
@@ -22,14 +26,27 @@ const styles = StyleSheet.create({
     backgroundColor: '#1F1F1F',
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#FFFFFF',
-    marginBottom: 10,
+    marginBottom: 20,
+    textAlign: 'center',
   },
-  description: {
-    fontSize: 16,
+  detailContainer: {
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 18,
+    fontWeight: 'bold',
     color: '#9A9A9A',
+    marginBottom: 5,
+  },
+  value: {
+    fontSize: 16,
+    color: '#FFFFFF',
+    backgroundColor: '#333333',
+    padding: 10,
+    borderRadius: 10,
   },
 });
 

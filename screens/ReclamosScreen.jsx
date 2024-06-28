@@ -1,25 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Modal, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
+const testData = [
+  { id: '1', title: 'Reclamo 1', description: 'Description of reclamo 1' },
+  { id: '2', title: 'Reclamo 2', description: 'Description of reclamo 2' },
+  { id: '3', title: 'Reclamo 3', description: 'Description of reclamo 3' },
+];
+
 const ReclamosScreen = ({ navigation }) => {
-  const [filterVisible, setFilterVisible] = useState(false);
-  const [filters, setFilters] = useState({ title: '', type: '' });
-
-  const reclamos = [
-    { id: '1', title: 'Reclamo 1', type: 'Type 1', address: 'Address A', description: 'Description A' },
-    { id: '2', title: 'Reclamo 2', type: 'Type 2', address: 'Address B', description: 'Description B' },
-    { id: '2', title: 'Reclamo 2', type: 'Type 2', address: 'Address B', description: 'Description B' },
-    { id: '2', title: 'Reclamo 2', type: 'Type 2', address: 'Address B', description: 'Description B' },
-    { id: '2', title: 'Reclamo 2', type: 'Type 2', address: 'Address B', description: 'Description B' },
-    { id: '2', title: 'Reclamo 2', type: 'Type 2', address: 'Address B', description: 'Description B' },
-    { id: '2', title: 'Reclamo 2', type: 'Type 2', address: 'Address B', description: 'Description B' },
-
-  ];
-
-  const filteredReclamos = reclamos.filter(
-    r => r.title.includes(filters.title) && r.type.includes(filters.type)
-  );
+  const [filterModalVisible, setFilterModalVisible] = useState(false);
 
   const renderReclamoItem = ({ item }) => (
     <TouchableOpacity onPress={() => navigation.navigate('ReclamoDetail', { reclamo: item })}>
@@ -30,50 +20,52 @@ const ReclamosScreen = ({ navigation }) => {
     </TouchableOpacity>
   );
 
-  const toggleFilterVisibility = () => {
-    setFilterVisible(!filterVisible);
-  };
-
-  const applyFilters = () => {
-    setFilterVisible(false);
-  };
-
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={toggleFilterVisibility}>
-          <Ionicons name="filter-outline" size={24} color="black" />
-        </TouchableOpacity>
-      </View>
-      {filterVisible && (
-        <View style={styles.filterContainer}>
-          <TextInput
-            placeholder="Title"
-            style={styles.input}
-            value={filters.title}
-            onChangeText={text => setFilters({ ...filters, title: text })}
-          />
-          <TextInput
-            placeholder="Type"
-            style={styles.input}
-            value={filters.type}
-            onChangeText={text => setFilters({ ...filters, type: text })}
-          />
-          <TouchableOpacity style={styles.applyButton} onPress={applyFilters}>
-            <Text style={styles.applyButtonText}>Apply Filters</Text>
-          </TouchableOpacity>
-        </View>
-      )}
+      <TouchableOpacity style={styles.filterButton} onPress={() => setFilterModalVisible(true)}>
+        <Ionicons name="filter" size={24} color="white" />
+      </TouchableOpacity>
       <FlatList
-        data={filteredReclamos}
+        data={testData}
         renderItem={renderReclamoItem}
-        keyExtractor={item => item.id}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.listContentContainer}
+        ListFooterComponent={() => <View style={{ height: 20 }} />}
       />
-      <TouchableOpacity 
-        style={styles.addButton} 
-        onPress={() => navigation.navigate('AddReclamo')}>
+      <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('AddReclamo')}>
         <Text style={styles.addButtonText}>Add Reclamo</Text>
       </TouchableOpacity>
+      <View style={styles.menu}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Promociones')}>
+          <Ionicons name="pricetag" size={24} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Denuncias')}>
+          <Ionicons name="alert-circle" size={24} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Reclamos')}>
+          <Ionicons name="chatbubble" size={24} color="white" />
+        </TouchableOpacity>
+      </View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={filterModalVisible}
+        onRequestClose={() => setFilterModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalTitle}>Filter Reclamos</Text>
+            <TextInput style={styles.input} placeholder="Search by title" placeholderTextColor="#9A9A9A" />
+            <TextInput style={styles.input} placeholder="Filter by type" placeholderTextColor="#9A9A9A" />
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setFilterModalVisible(false)}
+            >
+              <Text style={styles.closeButtonText}>Apply Filters</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -81,87 +73,102 @@ const ReclamosScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#f7f7f7',
+    backgroundColor: '#1F1F1F',
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginBottom: 10,
-  },
-  filterContainer: {
-    marginBottom: 10,
-    padding: 16,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.3,
-    shadowRadius: 1,
-    elevation: 3,
-  },
-  input: {
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    paddingHorizontal: 8,
-    marginBottom: 10,
-    borderRadius: 8,
-  },
-  applyButton: {
-    backgroundColor: '#007BFF',
-    padding: 10,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  applyButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-    color: '#333',
+  listContentContainer: {
+    paddingBottom: 150, // Ensures space for the add button and menu
+    paddingHorizontal: 10,
+    paddingTop: 60, // Add padding to ensure filter button is not over reclamos
   },
   reclamoItem: {
-    padding: 16,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    marginBottom: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.3,
-    shadowRadius: 1,
-    elevation: 3,
+    backgroundColor: '#333333',
+    paddingVertical: 20,
+    paddingHorizontal: 15,
+    marginVertical: 8,
+    borderRadius: 10,
+    marginHorizontal: 10,
   },
   reclamoTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
-    color: '#333',
+    color: '#FFFFFF',
   },
   reclamoDescription: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: 14,
+    color: '#9A9A9A',
   },
   addButton: {
-    backgroundColor: '#007BFF', // Cambiado al azul de la app
-    paddingVertical: 10,
-    paddingHorizontal: 15, // Ajustado para acortar de izquierda y derecha
-    borderRadius: 20, // Más redondeado
+    backgroundColor: '#007BFF',
+    padding: 15,
+    borderRadius: 10,
     alignItems: 'center',
-    marginTop: 20,
+    position: 'absolute',
+    bottom: 80,
+    left: 20,
+    right: 20,
   },
   addButtonText: {
-    color: '#fff',
+    color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: 'bold',
   },
-  
+  menu: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10,
+    backgroundColor: '#333333',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  menuItem: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 5,
+  },
+  filterButton: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    zIndex: 1,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalView: {
+    width: 300,
+    backgroundColor: '#333333',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 20,
+    marginBottom: 10,
+    color: '#FFFFFF',
+  },
+  input: {
+    height: 40,
+    backgroundColor: '#1F1F1F',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    color: '#FFFFFF',
+    width: '100%',
+    marginBottom: 20,
+  },
+  closeButton: {
+    backgroundColor: '#007BFF',
+    padding: 10,
+    borderRadius: 10,
+  },
+  closeButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+  },
 });
 
 export default ReclamosScreen;
+
 

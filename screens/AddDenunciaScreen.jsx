@@ -51,6 +51,7 @@ const AddDenunciaScreen = ({ navigation }) => {
       Alert.alert('Error', 'There was an error adding the denuncia.');
       console.error("Error creating denuncia", error);
     }
+    navigation.goBack();
   };
 
   const handleCancel = () => {
@@ -116,12 +117,14 @@ const AddDenunciaScreen = ({ navigation }) => {
         placeholder="Causa"
         value={cause}
         onChangeText={setCause}
+        placeholderTextColor="#9A9A9A"
       />
       <TextInput
         style={styles.input}
         placeholder="Descripción"
         value={description}
         onChangeText={setDescription}
+        placeholderTextColor="#9A9A9A"
       />
       <TouchableOpacity onPress={showDatepicker} style={styles.dateButton}>
         <Text style={styles.dateButtonText}>Seleccionar Fecha</Text>
@@ -140,13 +143,13 @@ const AddDenunciaScreen = ({ navigation }) => {
         placeholder="Lugar"
         value={place}
         onChangeText={setPlace}
+        placeholderTextColor="#9A9A9A"
       />
       <Picker
-        selectedValue= {type}
+        selectedValue={type}
         onValueChange={(itemValue) => setType(itemValue)}
         style={styles.picker}
       >
-        
         <Picker.Item label="Vecino" value="Vecino" />
         <Picker.Item label="Inspector" value="Inspector" />
         <Picker.Item label="Sitio" value="Sitio" />
@@ -167,29 +170,36 @@ const AddDenunciaScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#F5F5F5',
+    padding: 20,
+    backgroundColor: '#1F1F1F',
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
+    color: '#FFFFFF',
     marginBottom: 20,
     textAlign: 'center',
-    color: 'black',
   },
   input: {
-    height: 40,
-    borderColor: '#1E90FF',
+    height: 50,
+    borderColor: '#ccc',
     borderWidth: 1,
-    marginBottom: 12,
-    paddingLeft: 8,
-    borderRadius: 4,
-    backgroundColor: '#FFF',
+    marginBottom: 15,
+    paddingHorizontal: 15,
+    borderRadius: 10,
+    backgroundColor: '#333333',
+    color: '#FFFFFF',
+    fontSize: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
   },
   dateButton: {
-    backgroundColor: '#1E90FF',
-    padding: 10,
-    borderRadius: 8,
+    backgroundColor: '#007BFF',
+    padding: 15,
+    borderRadius: 10,
     alignItems: 'center',
     marginBottom: 12,
   },
@@ -200,38 +210,42 @@ const styles = StyleSheet.create({
   },
   selectedDate: {
     fontSize: 16,
-    color: '#666',
+    color: '#9A9A9A',
     marginBottom: 12,
   },
   picker: {
     height: 50,
-    width: '100%',
-    marginBottom: 12,
+    color: '#FFFFFF',
+    backgroundColor: '#333333',
+    marginBottom: 15,
+    borderRadius: 10,
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 20,
+    justifyContent: 'space-between',
+    marginTop: 30,
   },
   buttonAccept: {
     backgroundColor: '#007BFF',
-    padding: 10,
-    borderRadius: 8,
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 10,
     alignItems: 'center',
     flex: 1,
-    marginRight: 5,
+    marginRight: 10,
   },
   buttonCancel: {
-    backgroundColor: 'red',
-    padding: 10,
-    borderRadius: 8,
+    backgroundColor: '#dc3545',
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 10,
     alignItems: 'center',
     flex: 1,
-    marginLeft: 5,
+    marginLeft: 10,
   },
   buttonText: {
-    color: '#FFF',
-    fontSize: 16,
+    color: '#fff',
+    fontSize: 18,
     fontWeight: 'bold',
   },
 });

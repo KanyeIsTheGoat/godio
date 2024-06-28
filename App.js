@@ -10,6 +10,17 @@ import ReclamosScreen from './screens/ReclamosScreen';
 import PromocionDetailScreen from './screens/PromocionDetailScreen';
 import DenunciaDetailScreen from './screens/DenunciaDetailScreen';
 import ReclamoDetailScreen from './screens/ReclamoDetailScreen';
+import AddPromotionScreen from './screens/AddPromotionScreen';
+import UserInfoScreen from './screens/UserInfoScreen';
+import AddReclamoScreen from './screens/AddReclamoScreen';
+import AddDenunciaScreen from './screens/AddDenunciaScreen';
+import MisDenunciasScreen from './screens/MisDenunciasScren';
+import MisReclamosScreen from './screens/MisReclamosScreen';
+import NotificationsScreen from './screens/NotificationsScreen';
+
+
+
+
 
 const Stack = createStackNavigator();
 
@@ -34,6 +45,17 @@ export default function App() {
         <Stack.Screen name="PromocionDetail" component={PromocionDetailScreen} options={{ title: 'Promotion Detail' }} />
         <Stack.Screen name="DenunciaDetail" component={DenunciaDetailScreen} options={{ title: 'Denuncia Detail' }} />
         <Stack.Screen name="ReclamoDetail" component={ReclamoDetailScreen} options={{ title: 'Reclamo Detail' }} />
+        <Stack.Screen name="AddPromotion" component={AddPromotionScreen} options={{ title: 'Add Promocion' }} />
+        <Stack.Screen name="Profile" component={UserInfoScreen} options={{ title: 'Profile' }} />
+        <Stack.Screen name="AddReclamo" component={AddReclamoScreen} options={{ title: 'Agregar Reclamo' }} />
+        <Stack.Screen name="AddDenuncia" component={AddDenunciaScreen} options={{ title: 'Agregar Denuncia' }} />
+        <Stack.Screen name="MisDenuncias" component={MisDenunciasScreen} options={{ title: 'Mis Denuncias' }} />
+        <Stack.Screen name="MisReclamos" component={MisReclamosScreen} options={{ title: 'Mis Reclamos' }} />
+        <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ title: 'Notificaciones' }} />
+
+
+
+
       </Stack.Navigator>
     </NavigationContainer>
   );
