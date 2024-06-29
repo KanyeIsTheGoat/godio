@@ -18,10 +18,6 @@ import MisDenunciasScreen from './screens/MisDenunciasScren';
 import MisReclamosScreen from './screens/MisReclamosScreen';
 import NotificationsScreen from './screens/NotificationsScreen';
 
-
-
-
-
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -52,10 +48,6 @@ export default function App() {
         <Stack.Screen name="MisDenuncias" component={MisDenunciasScreen} options={{ title: 'Mis Denuncias' }} />
         <Stack.Screen name="MisReclamos" component={MisReclamosScreen} options={{ title: 'Mis Reclamos' }} />
         <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ title: 'Notificaciones' }} />
-
-
-
-
       </Stack.Navigator>
     </NavigationContainer>
   );

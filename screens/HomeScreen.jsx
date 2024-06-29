@@ -52,7 +52,7 @@ const HomeScreen = ({ navigation }) => {
       </View>
       <View style={styles.content}>
         <Text style={styles.welcomeMessage}>Municipalidad de San Isidro</Text>
-        <Image source={require('C:/Users/bauti/ProyectosReact/godio/assets/municipio.jpg')} style={styles.image} />
+        <Image source={require('../assets/municipio.jpg')} style={styles.image} />
       </View>
       <View style={styles.menu}>
         <TouchableOpacity
