@@ -13,10 +13,10 @@ const CustomDrawerContent = (props) => {
     <DrawerContentScrollView {...props} style={styles.drawerContent}>
       <DrawerItemList {...props} />
       <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('Profile')}>
-        <Text style={styles.drawerLabel}>Profile</Text>
+        <Text style={styles.drawerLabel}>Perfil</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('Promociones')}>
-        <Text style={styles.drawerLabel}>Promotions</Text>
+        <Text style={styles.drawerLabel}>Promociones</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('Denuncias')}>
         <Text style={styles.drawerLabel}>Denuncias</Text>
@@ -25,7 +25,7 @@ const CustomDrawerContent = (props) => {
         <Text style={styles.drawerLabel}>Reclamos</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('Login')}>
-        <Text style={styles.drawerLabel}>Log Out</Text>
+        <Text style={styles.drawerLabel}>Cerrar Sesión</Text>
       </TouchableOpacity>
     </DrawerContentScrollView>
   );
@@ -54,6 +54,7 @@ const HomeScreen = ({ navigation }) => {
         <Text style={styles.welcomeMessage}>Municipalidad de San Isidro</Text>
         <Image source={require('../assets/municipio.jpg')} style={styles.image} />
       </View>
+
       <View style={styles.menu}>
         <TouchableOpacity
           style={[
@@ -63,7 +64,7 @@ const HomeScreen = ({ navigation }) => {
           onPress={() => handleMenuPress('Promociones')}
         >
           <Icon name="pricetag" size={20} color="#FFFFFF" />
-          <Text style={styles.menuLabel}>Promotions</Text>
+          <Text style={styles.menuLabel}>Promociones</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[

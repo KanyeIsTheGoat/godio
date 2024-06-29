@@ -21,7 +21,7 @@ const AddReclamoScreen = ({ navigation }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Add Reclamo</Text>
+      <Text style={styles.title}>Añadir Reclamo</Text>
       <TextInput
         style={styles.input}
         placeholder="Field 1"
@@ -48,10 +48,10 @@ const AddReclamoScreen = ({ navigation }) => {
       />
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.buttonAccept} onPress={handleAccept}>
-          <Text style={styles.buttonText}>Accept</Text>
+          <Text style={styles.buttonText}>Aceptar</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.buttonCancel} onPress={handleCancel}>
-          <Text style={styles.buttonText}>Cancel</Text>
+          <Text style={styles.buttonText}>Cancelar</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
