@@ -1,20 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Modal, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { fetchPromociones} from '../api/promociones';
 
-const testData = [
+/*const testData = [
   { id: '1', title: 'Promotion 1', description: 'Description of promotion 1' },
   
-];
+];*/
 
 const PromocionesScreen = ({ navigation }) => {
   const [filterModalVisible, setFilterModalVisible] = useState(false);
+    const [filters, setFilters] = useState({ title: '', type: '' });
+    const [promociones, setPromociones] = useState([]);
+
+      useEffect(() => {
+        const loadPromociones = async () => {
+          try {
+            const data = await fetchPromociones();
+            setPromociones(data);
+          } catch (error) {
+            console.error("Error loading promociones", error);
+          }
+        };
+
+        loadPromociones();
+      }, []);
+
+const filteredPromociones = promociones.filter(
+    d => (d.titulo ? d.titulo.includes(filters.title) : true) &&
+         (d.tipoPromocion ? d.tipoPromocion.includes(filters.type) : true)
+  );
 
   const renderPromocionItem = ({ item }) => (
     <TouchableOpacity onPress={() => navigation.navigate('PromocionDetail', { promocion: item })}>
       <View style={styles.promocionItem}>
-        <Text style={styles.promocionTitle}>{item.title}</Text>
-        <Text style={styles.promocionDescription}>{item.description}</Text>
+        <Text style={styles.promocionTitle}>{item.titulo}</Text>
+        <Text style={styles.promocionDescription}>{item.descripcion}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -25,7 +46,7 @@ const PromocionesScreen = ({ navigation }) => {
         <Ionicons name="filter" size={24} color="white" />
       </TouchableOpacity>
       <FlatList
-        data={testData}
+        data={filteredPromociones}
         renderItem={renderPromocionItem}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContentContainer}

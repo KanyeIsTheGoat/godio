@@ -1,21 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Modal, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { fetchReclamos } from '../api/reclamos';
 
-const testData = [
+/*const testData = [
   { id: '1', title: 'Reclamo 1', description: 'Description of reclamo 1' },
   { id: '2', title: 'Reclamo 2', description: 'Description of reclamo 2' },
   { id: '3', title: 'Reclamo 3', description: 'Description of reclamo 3' },
-];
+];*/
 
 const ReclamosScreen = ({ navigation }) => {
   const [filterModalVisible, setFilterModalVisible] = useState(false);
+    const [filters, setFilters] = useState({ title: '', type: '' });
+    const [reclamos, setReclamos] = useState([]);
+
+  useEffect(() => {
+    const loadReclamos = async () => {
+      try {
+        const data = await fetchReclamos();
+        setReclamos(data);
+      } catch (error) {
+        console.error("Error loading reclamos.", error);
+      }
+    };
+    loadReclamos();
+  }, []);
+
+const filteredReclamos = reclamos.filter(
+    d => (d.titulo ? d.titulo.includes(filters.title) : true) &&
+         (d.tipoReclamo ? d.tipoReclamo.includes(filters.type) : true)
+  );
 
   const renderReclamoItem = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('ReclamoDetail', { reclamo: item })}>
+    <TouchableOpacity onPress={() => navigation.navigate('ReclamoDetail', { reclamo: item.idReclamo })}>
       <View style={styles.reclamoItem}>
-        <Text style={styles.reclamoTitle}>{item.title}</Text>
-        <Text style={styles.reclamoDescription}>{item.description}</Text>
+        <Text style={styles.reclamoTitle}>{item.desperfecto || 'Sin título'}</Text>
+        <Text style={styles.reclamoDescription}>{item.descripcion || 'Sin descripción'}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -26,7 +46,7 @@ const ReclamosScreen = ({ navigation }) => {
         <Ionicons name="filter" size={24} color="white" />
       </TouchableOpacity>
       <FlatList
-        data={testData}
+        data={filteredReclamos}
         renderItem={renderReclamoItem}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContentContainer}
