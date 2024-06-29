@@ -1,0 +1,1 @@
+agregar este paquete para carrusel de foto "react-native-snap-carousel": "^3.9.1",

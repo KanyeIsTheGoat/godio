@@ -1,74 +1,100 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 const AddPromotionScreen = ({ navigation }) => {
   const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
   const [promoType, setPromoType] = useState('');
+  const [business, setBusiness] = useState('');
   const [phone, setPhone] = useState('');
   const [hours, setHours] = useState('');
   const [email, setEmail] = useState('');
+  const [description, setDescription] = useState('');
+  const [photos, setPhotos] = useState([]);
 
   const handleAccept = () => {
-    // Logica para guardar la promocion (conectar con backend en el futuro)
-    const newPromotion = { title, description, promoType, phone, hours, email };
-    console.log(newPromotion); // Enviar esto al backend más adelante
+    // Add logic to save the promotion
     Alert.alert('Promotion Added', 'The promotion has been added successfully.');
-    navigation.goBack(); // Volver a la pantalla anterior
+    navigation.goBack(); // Navigate back to the previous screen
   };
 
   const handleCancel = () => {
-    navigation.goBack(); // Volver a la pantalla anterior
+    navigation.goBack(); // Navigate back to the previous screen
+  };
+
+  const handleAddPhoto = () => {
+    if (photos.length < 5) {
+      // Logic to add a photo
+    } else {
+      Alert.alert('Maximum Reached', 'You can only add up to 5 photos.');
+    }
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Add Promotion</Text>
+      <Text style={styles.title}>Añadir Promoción</Text>
       <TextInput
         style={styles.input}
-        placeholder="Title"
+        placeholder="Título"
         value={title}
         onChangeText={setTitle}
+        placeholderTextColor="#AAAAAA"
       />
       <TextInput
         style={styles.input}
-        placeholder="Description"
-        value={description}
-        onChangeText={setDescription}
-        multiline
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Promotion Type"
+        placeholder="Tipo de Promoción"
         value={promoType}
         onChangeText={setPromoType}
+        placeholderTextColor="#AAAAAA"
       />
       <TextInput
         style={styles.input}
-        placeholder="Phone"
+        placeholder="Negocio a Promocionar"
+        value={business}
+        onChangeText={setBusiness}
+        placeholderTextColor="#AAAAAA"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Teléfono"
         value={phone}
         onChangeText={setPhone}
         keyboardType="phone-pad"
+        placeholderTextColor="#AAAAAA"
       />
       <TextInput
         style={styles.input}
-        placeholder="Hours"
+        placeholder="Horarios Disponibles"
         value={hours}
         onChangeText={setHours}
+        placeholderTextColor="#AAAAAA"
       />
       <TextInput
         style={styles.input}
-        placeholder="Email"
+        placeholder="Mail de Contacto"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
+        placeholderTextColor="#AAAAAA"
       />
+      <TextInput
+        style={styles.input}
+        placeholder="Descripción"
+        value={description}
+        onChangeText={setDescription}
+        multiline
+        placeholderTextColor="#AAAAAA"
+      />
+      <Text style={styles.photoLabel}>Fotos (máx. 5):</Text>
+      <TouchableOpacity style={styles.photoButton} onPress={handleAddPhoto}>
+        <Ionicons name="camera" size={24} color="#FFFFFF" />
+      </TouchableOpacity>
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.buttonAccept} onPress={handleAccept}>
-          <Text style={styles.buttonText}>Accept</Text>
+          <Text style={styles.buttonText}>Añadir Promoción</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.buttonCancel} onPress={handleCancel}>
-          <Text style={styles.buttonText}>Cancel</Text>
+          <Text style={styles.buttonText}>Cancelar</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -80,6 +106,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: 20,
     backgroundColor: '#1F1F1F',
+    justifyContent: 'center',
   },
   title: {
     fontSize: 28,
@@ -94,15 +121,23 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 15,
     paddingHorizontal: 15,
-    borderRadius: 10,
+    borderRadius: 8,
     backgroundColor: '#333333',
     color: '#FFFFFF',
+    textAlign: 'marginLeft',
+  },
+  photoLabel: {
     fontSize: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 2,
+    color: '#FFFFFF',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  photoButton: {
+    backgroundColor: '#007BFF',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 20,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -111,25 +146,25 @@ const styles = StyleSheet.create({
   },
   buttonAccept: {
     backgroundColor: '#007BFF',
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
     alignItems: 'center',
     flex: 1,
-    marginRight: 10,
+    marginRight: 5,
   },
   buttonCancel: {
     backgroundColor: '#dc3545',
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
     alignItems: 'center',
     flex: 1,
-    marginLeft: 10,
+    marginLeft: 5,
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 18,
+    color: '#FFFFFF',
+    fontSize: 16,
     fontWeight: 'bold',
   },
 });
