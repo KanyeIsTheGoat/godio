@@ -1,54 +1,71 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 const AddReclamoScreen = ({ navigation }) => {
-  const [field1, setField1] = useState('');
-  const [field2, setField2] = useState('');
-  const [field3, setField3] = useState('');
-  const [field4, setField4] = useState('');
+  const [title, setTitle] = useState('');
+  const [desperfectoType, setDesperfectoType] = useState('');
+  const [ubicacion, setUbicacion] = useState('');
+  const [description, setDescription] = useState('');
+  const [photos, setPhotos] = useState([]);
 
   const handleAccept = () => {
-    // Logica para guardar el reclamo (conectar con backend en el futuro)
-    const newReclamo = { field1, field2, field3, field4 };
-    console.log(newReclamo); // Enviar esto al backend más adelante
-    Alert.alert('Reclamo Added', 'The reclamo has been added successfully.');
-    navigation.goBack(); // Volver a la pantalla anterior
+    // Add logic to save the desperfecto
+    Alert.alert('Desperfecto Added', 'The desperfecto has been added successfully.');
+    navigation.goBack(); // Navigate back to the previous screen
   };
 
   const handleCancel = () => {
-    navigation.goBack(); // Volver a la pantalla anterior
+    navigation.goBack(); // Navigate back to the previous screen
+  };
+
+  const handleAddPhoto = () => {
+    if (photos.length < 5) {
+      // Logic to add a photo
+    } else {
+      Alert.alert('Maximum Reached', 'You can only add up to 5 photos.');
+    }
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Añadir Reclamo</Text>
+      <Text style={styles.title}>Crear Reclamo</Text>
       <TextInput
         style={styles.input}
-        placeholder="Field 1"
-        value={field1}
-        onChangeText={setField1}
+        placeholder="Título"
+        value={title}
+        onChangeText={setTitle}
+        placeholderTextColor="#AAAAAA"
       />
       <TextInput
         style={styles.input}
-        placeholder="Field 2"
-        value={field2}
-        onChangeText={setField2}
+        placeholder="Tipo de Desperfecto"
+        value={desperfectoType}
+        onChangeText={setDesperfectoType}
+        placeholderTextColor="#AAAAAA"
       />
       <TextInput
         style={styles.input}
-        placeholder="Field 3"
-        value={field3}
-        onChangeText={setField3}
+        placeholder="Ubicación"
+        value={ubicacion}
+        onChangeText={setUbicacion}
+        placeholderTextColor="#AAAAAA"
       />
       <TextInput
         style={styles.input}
-        placeholder="Field 4"
-        value={field4}
-        onChangeText={setField4}
+        placeholder="Descripción"
+        value={description}
+        onChangeText={setDescription}
+        multiline
+        placeholderTextColor="#AAAAAA"
       />
+      <Text style={styles.photoLabel}>Fotos (máx. 5):</Text>
+      <TouchableOpacity style={styles.photoButton} onPress={handleAddPhoto}>
+        <Ionicons name="camera" size={24} color="#FFFFFF" />
+      </TouchableOpacity>
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.buttonAccept} onPress={handleAccept}>
-          <Text style={styles.buttonText}>Aceptar</Text>
+          <Text style={styles.buttonText}>Crear Reclamo</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.buttonCancel} onPress={handleCancel}>
           <Text style={styles.buttonText}>Cancelar</Text>
@@ -63,6 +80,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: 20,
     backgroundColor: '#1F1F1F',
+    justifyContent: 'center',
   },
   title: {
     fontSize: 28,
@@ -77,15 +95,23 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 15,
     paddingHorizontal: 15,
-    borderRadius: 10,
+    borderRadius: 8,
     backgroundColor: '#333333',
     color: '#FFFFFF',
+    textAlign: 'leftmargin',
+  },
+  photoLabel: {
     fontSize: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 2,
+    color: '#FFFFFF',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  photoButton: {
+    backgroundColor: '#007BFF',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 20,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -94,25 +120,25 @@ const styles = StyleSheet.create({
   },
   buttonAccept: {
     backgroundColor: '#007BFF',
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
     alignItems: 'center',
     flex: 1,
-    marginRight: 10,
+    marginRight: 5,
   },
   buttonCancel: {
     backgroundColor: '#dc3545',
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
     alignItems: 'center',
     flex: 1,
-    marginLeft: 10,
+    marginLeft: 5,
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 18,
+    color: '#FFFFFF',
+    fontSize: 16,
     fontWeight: 'bold',
   },
 });

@@ -7,8 +7,8 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sign In</Text>
-      <Text style={styles.subtitle}>Please fill up email and password to log in to your account</Text>
+      <Text style={styles.title}>Iniciar Sesión</Text>
+      <Text style={styles.subtitle}>Ingrese su mail y contraseña</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -26,10 +26,10 @@ const LoginScreen = ({ navigation }) => {
         secureTextEntry
       />
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
-        <Text style={styles.buttonText}>Sign In</Text>
+        <Text style={styles.buttonText}>Iniciar Sesión</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-        <Text style={styles.signUp}>Sign up</Text>
+        <Text style={styles.signUp}>Registrarse</Text>
       </TouchableOpacity>
     </View>
   );

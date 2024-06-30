@@ -9,10 +9,10 @@ const RegistrationScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sign Up</Text>
+      <Text style={styles.title}>Registro</Text>
       <TextInput
         style={styles.input}
-        placeholder="Name"
+        placeholder="Nombre"
         placeholderTextColor="#9A9A9A"
         value={name}
         onChangeText={setName}
@@ -27,7 +27,7 @@ const RegistrationScreen = ({ navigation }) => {
       />
       <TextInput
         style={styles.input}
-        placeholder="Phone Number"
+        placeholder="Telefono"
         placeholderTextColor="#9A9A9A"
         value={phoneNumber}
         onChangeText={setPhoneNumber}
@@ -35,17 +35,17 @@ const RegistrationScreen = ({ navigation }) => {
       />
       <TextInput
         style={styles.input}
-        placeholder="Password"
+        placeholder="Contraseña"
         placeholderTextColor="#9A9A9A"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
-        <Text style={styles.buttonText}>Sign Up</Text>
+        <Text style={styles.buttonText}>Registrar</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-        <Text style={styles.signIn}>Already have an account? Sign In</Text>
+        <Text style={styles.signIn}>Ya tienes una cuenta? Inicia Sesión</Text>
       </TouchableOpacity>
     </View>
   );

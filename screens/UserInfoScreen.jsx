@@ -15,9 +15,9 @@ const UserInfoScreen = ({ navigation }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>User Profile</Text>
+      <Text style={styles.title}>Perfil</Text>
       <View style={styles.detailContainer}>
-        <Text style={styles.label}>Name:</Text>
+        <Text style={styles.label}>Nombre:</Text>
         <Text style={styles.value}>{user.name}</Text>
       </View>
       <View style={styles.detailContainer}>
@@ -37,7 +37,7 @@ const UserInfoScreen = ({ navigation }) => {
         <Text style={styles.buttonText}>Mis Reclamos</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.buttonLogout} onPress={handleLogout}>
-        <Text style={styles.buttonText}>Log Out</Text>
+        <Text style={styles.buttonText}>Cerrar Sesión</Text>
       </TouchableOpacity>
     </ScrollView>
   );

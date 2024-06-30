@@ -111,7 +111,7 @@ const AddDenunciaScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Añadir Denuncia</Text>
+      <Text style={styles.title}>Crear Denuncia</Text>
       <TextInput
         style={styles.input}
         placeholder="Causa"
