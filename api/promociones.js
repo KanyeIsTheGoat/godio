@@ -2,7 +2,7 @@ import api from "../api/api";
 
 export const fetchPromociones = async () => {
   try {
-    const response = await fetch('http://192.168.0.18:8080/api/promociones');
+    const response = await fetch('http://192.168.0.244:8080/api/promociones');
     const data = await response.json();
     return data;
   } catch (error) {

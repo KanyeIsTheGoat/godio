@@ -2,7 +2,7 @@ import api from "../api/api";
 
 export const fetchDenuncias = async () => {
   try {
-    const response = await fetch('http://192.168.0.18:8080/api/denuncias');
+    const response = await fetch('http://192.168.0.244:8080/api/denuncias');
     const data = await response.json();
     return data;
   } catch (error) {
@@ -23,7 +23,14 @@ export const createDenuncia = async (denuncia) => {
 
 export const fetchDenunciaById = async (id) => {
   try {
-    const response = await fetch('http://192.168.0.18:8080/api/denuncias/${id}');
+    // Validar y convertir el id a BigInt si es necesario
+    if (typeof id === 'string' || typeof id === 'number') {
+      id = BigInt(id);
+    } else if (typeof id !== 'bigint') {
+      throw new Error(`Invalid id type. Expected string, number, or bigint, received ${typeof id}`);
+    }
+
+    const response = await fetch(`http://192.168.0.244:8080/api/denuncias/${id}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch denuncia with id ${id}`);
     }
