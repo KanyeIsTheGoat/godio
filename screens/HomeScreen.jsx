@@ -45,7 +45,7 @@ const HomeScreen = ({ navigation }) => {
         <TouchableOpacity onPress={() => navigation.openDrawer()}>
           <Icon name="menu" size={30} color="#FFFFFF" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Home</Text>
+        <Text style={styles.headerTitle}>MuniApp</Text>
         <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
           <Icon name="notifications" size={30} color="#FFFFFF" />
         </TouchableOpacity>
@@ -125,6 +125,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: '#FFFFFF',
     marginBottom: 20,
+    textAlign: 'center',
   },
   image: {
     width: '100%',

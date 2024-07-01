@@ -14,7 +14,7 @@ const DenunciasScreen = ({ navigation }) => {
         const data = await fetchDenuncias();
         setDenuncias(data);
       } catch (error) {
-        console.error("Error loading denuncias", error);
+        console.error("Error cargando denuncias", error);
       }
     };
 
@@ -63,10 +63,10 @@ const DenunciasScreen = ({ navigation }) => {
           <Ionicons name="pricetag" size={24} color="white" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Denuncias')}>
-          <Ionicons name="alert-circle" size={24} color="white" />
+          <Ionicons name="warning" size={24} color="white" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Reclamos')}>
-          <Ionicons name="chatbubble" size={24} color="white" />
+          <Ionicons name="document-text" size={24} color="white" />
         </TouchableOpacity>
       </View>
       <Modal

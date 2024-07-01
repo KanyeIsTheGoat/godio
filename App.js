@@ -33,16 +33,16 @@ export default function App() {
         }}
       >
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Register" component={RegistrationScreen} options={{ title: 'Register' }} />
-        <Stack.Screen name="Home" component={HomeNavigator} options={{ title: 'Home', headerShown: false }} />
-        <Stack.Screen name="Promociones" component={PromocionesScreen} options={{ title: 'Promotions' }} />
+        <Stack.Screen name="Register" component={RegistrationScreen} options={{ title: 'Registrarse', headerShown: false }} />
+        <Stack.Screen name="Home" component={HomeNavigator} options={{ title: 'MuniAPP', headerShown: false }} />
+        <Stack.Screen name="Promociones" component={PromocionesScreen} options={{ title: 'Promociones' }} />
         <Stack.Screen name="Denuncias" component={DenunciasScreen} options={{ title: 'Denuncias' }} />
         <Stack.Screen name="Reclamos" component={ReclamosScreen} options={{ title: 'Reclamos' }} />
-        <Stack.Screen name="PromocionDetail" component={PromocionDetailScreen} options={{ title: 'Promotion Detail' }} />
-        <Stack.Screen name="DenunciaDetail" component={DenunciaDetailScreen} options={{ title: 'Denuncia Detail' }} />
-        <Stack.Screen name="ReclamoDetail" component={ReclamoDetailScreen} options={{ title: 'Reclamo Detail' }} />
-        <Stack.Screen name="AddPromotion" component={AddPromotionScreen} options={{ title: 'Add Promocion' }} />
-        <Stack.Screen name="Profile" component={UserInfoScreen} options={{ title: 'Profile' }} />
+        <Stack.Screen name="PromocionDetail" component={PromocionDetailScreen} options={{ title: 'Detalle' }} />
+        <Stack.Screen name="DenunciaDetail" component={DenunciaDetailScreen} options={{ title: 'Detalle' }} />
+        <Stack.Screen name="ReclamoDetail" component={ReclamoDetailScreen} options={{ title: 'Detalle' }} />
+        <Stack.Screen name="AddPromotion" component={AddPromotionScreen} options={{ title: 'Añadir Promocion' }} />
+        <Stack.Screen name="Profile" component={UserInfoScreen} options={{ title: 'Perfil' }} />
         <Stack.Screen name="AddReclamo" component={AddReclamoScreen} options={{ title: 'Agregar Reclamo' }} />
         <Stack.Screen name="AddDenuncia" component={AddDenunciaScreen} options={{ title: 'Agregar Denuncia' }} />
         <Stack.Screen name="MisDenuncias" component={MisDenunciasScreen} options={{ title: 'Mis Denuncias' }} />

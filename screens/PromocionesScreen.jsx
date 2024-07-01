@@ -19,7 +19,7 @@ const PromocionesScreen = ({ navigation }) => {
             const data = await fetchPromociones();
             setPromociones(data);
           } catch (error) {
-            console.error("Error loading promociones", error);
+            console.error("Error Cargando promociones", error);
           }
         };
 
@@ -53,17 +53,17 @@ const filteredPromociones = promociones.filter(
         ListFooterComponent={() => <View style={{ height: 20 }} />}
       />
       <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('AddPromotion')}>
-        <Text style={styles.addButtonText}>Add Promotion</Text>
+        <Text style={styles.addButtonText}>Añadir Promociones</Text>
       </TouchableOpacity>
       <View style={styles.menu}>
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Promociones')}>
           <Ionicons name="pricetag" size={24} color="white" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Denuncias')}>
-          <Ionicons name="alert-circle" size={24} color="white" />
+          <Ionicons name="warning" size={24} color="white" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Reclamos')}>
-          <Ionicons name="chatbubble" size={24} color="white" />
+          <Ionicons name="document-text" size={24} color="white" />
         </TouchableOpacity>
       </View>
       <Modal
@@ -74,14 +74,14 @@ const filteredPromociones = promociones.filter(
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalView}>
-            <Text style={styles.modalTitle}>Filter Promotions</Text>
-            <TextInput style={styles.input} placeholder="Search by title" placeholderTextColor="#9A9A9A" />
-            <TextInput style={styles.input} placeholder="Filter by type" placeholderTextColor="#9A9A9A" />
+            <Text style={styles.modalTitle}>Filtros</Text>
+            <TextInput style={styles.input} placeholder="Buscar por titulo" placeholderTextColor="#9A9A9A" />
+            <TextInput style={styles.input} placeholder="Filtrar por tipo" placeholderTextColor="#9A9A9A" />
             <TouchableOpacity
               style={styles.closeButton}
               onPress={() => setFilterModalVisible(false)}
             >
-              <Text style={styles.closeButtonText}>Apply Filters</Text>
+              <Text style={styles.closeButtonText}>Aplicar</Text>
             </TouchableOpacity>
           </View>
         </View>
