@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeNavigator from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
-import RegistrationScreen from './screens/RegistrationScreen';
+import RegisterScreen from './screens/RegisterScreen';
 import PromocionesScreen from './screens/PromocionesScreen';
 import DenunciasScreen from './screens/DenunciasScreen';
 import ReclamosScreen from './screens/ReclamosScreen';
@@ -36,7 +36,7 @@ export default function App() {
       >
         <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Register" component={RegistrationScreen} options={{ title: 'Register' }} />
+        <Stack.Screen name="Register" component={RegisterScreen} options={{ title: 'Register' }} />
         <Stack.Screen name="Home" component={HomeNavigator} options={{ title: 'Home', headerShown: false }} />
         <Stack.Screen name="Promociones" component={PromocionesScreen} options={{ title: 'Promotions' }} />
         <Stack.Screen name="Denuncias" component={DenunciasScreen} options={{ title: 'Denuncias' }} />
