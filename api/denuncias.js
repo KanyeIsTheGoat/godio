@@ -2,7 +2,7 @@ import api from "../api/api";
 
 export const fetchDenuncias = async () => {
   try {
-    const response = await fetch('http://192.168.0.244:8080/api/denuncias');
+    const response = await fetch('http://192.168.0.18:8080/api/denuncias');
     const data = await response.json();
     return data;
   } catch (error) {

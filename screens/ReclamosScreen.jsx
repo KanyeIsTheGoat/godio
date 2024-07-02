@@ -32,7 +32,7 @@ const filteredReclamos = reclamos.filter(
   );
 
   const renderReclamoItem = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('ReclamoDetail', { reclamo: item.idReclamo })}>
+    <TouchableOpacity onPress={() => navigation.navigate('ReclamoDetail', { reclamo: item})}>
       <View style={styles.reclamoItem}>
         <Text style={styles.reclamoTitle}>{item.desperfecto || 'Sin título'}</Text>
         <Text style={styles.reclamoDescription}>{item.descripcion || 'Sin descripción'}</Text>

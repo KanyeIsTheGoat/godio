@@ -8,20 +8,17 @@ const PromocionDetailScreen = ({ route, navigation }) => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Ionicons name="arrow-back" size={24} color="#FFFFFF" onPress={() => navigation.goBack()} />
-        <Text style={styles.title}>{promocion.title}</Text>
+        <Text style={styles.title}>{promocion.titulo}</Text>
       </View>
       <View style={styles.detailContainer}>
         <Text style={styles.label}>Descripción:</Text>
-        <Text style={styles.value}>{promocion.description}</Text>
+        <Text style={styles.value}>{promocion.descripcion}</Text>
         <Text style={styles.label}>Dirección:</Text>
-        <Text style={styles.value}>{promocion.address}</Text>
+        <Text style={styles.value}>{promocion.direccion}</Text>
         <Text style={styles.label}>Horarios:</Text>
-        <Text style={styles.value}>{promocion.hours}</Text>
+        <Text style={styles.value}>{promocion.horarios}</Text>
         <Text style={styles.label}>Teléfono:</Text>
-        <Text style={styles.value}>{promocion.phone}</Text>
-        <Text style={styles.label}>Mail:</Text>
-        <Text style={styles.value}>{promocion.email}</Text>
+        <Text style={styles.value}>{promocion.contacto}</Text>
         <Text style={styles.label}>Fotos:</Text>
         {promocion.photos && promocion.photos.length > 0 ? (
           promocion.photos.map((photo, index) => (

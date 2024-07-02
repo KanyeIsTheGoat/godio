@@ -1,48 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, ScrollView } from 'react-native';
 import { fetchDenunciaById } from '../api/denuncias';
-import FileViewer from '../api/FileHandler';
 
-const DenunciaDetailScreen = ({ route }) => {
-  const { id } = route.params;
-  const [denuncia, setDenuncia] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [filesVisible, setFilesVisible] = useState(false);
+const DenunciaDetailScreen = ({ route, navigation }) => {
+  const { denuncia } = route.params;
 
-  useEffect(() => {
-    const loadDenuncia = async () => {
-      try {
-        const data = await fetchDenunciaById(id);
-        setDenuncia(data);
-      } catch (error) {
-        console.error("Error loading denuncia", error);
-      } finally {
-        setLoading(false);
-      }
-    };
 
-    loadDenuncia();
-  }, [id]);
-
-  if (loading) {
-    return (
-      <View style={styles.loaderContainer}>
-        <ActivityIndicator size="large" color="#007BFF" />
-      </View>
-    );
-  }
-
-  if (!denuncia) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.errorText}>Denuncia no encontrada</Text>
-      </View>
-    );
-  }
-
-  const toggleFilesVisibility = () => {
-    setFilesVisible(!filesVisible);
-  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -71,11 +34,7 @@ const DenunciaDetailScreen = ({ route }) => {
         <Text style={styles.label}>Fecha y Hora:</Text>
         <Text style={styles.value}>{new Date(denuncia.fechaHora).toLocaleString()}</Text>
       </View>
-      <View style={styles.detailContainer}>
-        <Text style={styles.label}>Denunciante:</Text>
-        <Text style={styles.value}>{denuncia.denunciante ? `${denuncia.denunciante.nombre} ${denuncia.denunciante.apellido}` : 'Sin denunciante'}</Text>
-      </View>
-      
+
       {denuncia.sitioDenunciado && (
         <View style={styles.detailContainer}>
           <Text style={styles.label}>Sitio Denunciado:</Text>
@@ -97,11 +56,6 @@ const DenunciaDetailScreen = ({ route }) => {
         </View>
       )}
 
-      <TouchableOpacity onPress={toggleFilesVisibility} style={styles.filesButton}>
-        <Text style={styles.filesButtonText}>{filesVisible ? 'Ocultar Archivos' : 'Mostrar Archivos'}</Text>
-      </TouchableOpacity>
-
-      {filesVisible && <FileViewer files={denuncia.pruebas} />}
     </ScrollView>
   );
 };
