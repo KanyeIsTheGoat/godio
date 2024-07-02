@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Drawer = createDrawerNavigator();
 
@@ -33,6 +34,18 @@ const CustomDrawerContent = (props) => {
 
 const HomeScreen = ({ navigation }) => {
   const [activeMenu, setActiveMenu] = useState('');
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const userData = await AsyncStorage.getItem('user');
+      if (userData) {
+        setUser(JSON.parse(userData));
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   const handleMenuPress = (menu) => {
     setActiveMenu(menu);
@@ -54,7 +67,6 @@ const HomeScreen = ({ navigation }) => {
         <Text style={styles.welcomeMessage}>Municipalidad de San Isidro</Text>
         <Image source={require('../assets/municipio.jpg')} style={styles.image} />
       </View>
-
       <View style={styles.menu}>
         <TouchableOpacity
           style={[
@@ -132,6 +144,16 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 300,
     borderRadius: 10,
+  },
+  userInfo: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: '#555555',
+    borderRadius: 10,
+  },
+  userText: {
+    fontSize: 18,
+    color: '#FFFFFF',
   },
   menu: {
     flexDirection: 'row',

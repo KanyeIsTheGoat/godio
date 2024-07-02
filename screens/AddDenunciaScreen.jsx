@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, Picker } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ScrollView, Modal } from 'react-native';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { createDenuncia } from '../api/denuncias';
 import { fetchVecinos, fetchInspectores, fetchSitios } from '../api/denuncias';
 
@@ -8,13 +8,14 @@ const AddDenunciaScreen = ({ navigation }) => {
   const [cause, setCause] = useState('');
   const [description, setDescription] = useState('');
   const [date, setDate] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [place, setPlace] = useState('');
   const [type, setType] = useState('');
   const [denunciado, setDenunciado] = useState('');
   const [vecinos, setVecinos] = useState([]);
   const [inspectores, setInspectores] = useState([]);
   const [sitios, setSitios] = useState([]);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const loadOptions = async () => {
@@ -51,66 +52,90 @@ const AddDenunciaScreen = ({ navigation }) => {
       Alert.alert('Error', 'There was an error adding the denuncia.');
       console.error("Error creating denuncia", error);
     }
-    navigation.goBack();
   };
 
   const handleCancel = () => {
     navigation.goBack();
   };
 
-  const showDatepicker = () => {
-    setShowDatePicker(true);
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
   };
 
-  const onDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShowDatePicker(false);
-    setDate(currentDate);
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (selectedDate) => {
+    setDate(selectedDate);
+    hideDatePicker();
   };
 
   const renderDenunciadoOptions = () => {
+    let options = [];
+
     if (type === 'Vecino') {
-      return (
-        <Picker
-          selectedValue={denunciado}
-          onValueChange={(itemValue) => setDenunciado(itemValue)}
-          style={styles.picker}
+      options = vecinos.map((vecino) => (
+        <TouchableOpacity
+          key={vecino.documento}
+          style={[
+            styles.optionButton,
+            denunciado === vecino.documento && styles.optionButtonSelected
+          ]}
+          onPress={() => { setDenunciado(vecino.documento); setShowModal(false); }}
         >
-          {vecinos.map((vecino) => (
-            <Picker.Item key={vecino.documento} label={`${vecino.nombre} ${vecino.apellido}`} value={vecino.documento} />
-          ))}
-        </Picker>
-      );
+          <Text style={styles.optionButtonText}>{`${vecino.nombre} ${vecino.apellido}`}</Text>
+        </TouchableOpacity>
+      ));
     } else if (type === 'Inspector') {
-      return (
-        <Picker
-          selectedValue={denunciado}
-          onValueChange={(itemValue) => setDenunciado(itemValue)}
-          style={styles.picker}
+      options = inspectores.map((inspector) => (
+        <TouchableOpacity
+          key={inspector.legajo}
+          style={[
+            styles.optionButton,
+            denunciado === inspector.legajo && styles.optionButtonSelected
+          ]}
+          onPress={() => { setDenunciado(inspector.legajo); setShowModal(false); }}
         >
-          {inspectores.map((inspector) => (
-            <Picker.Item key={inspector.legajo} label={`${inspector.nombre} ${inspector.apellido}`} value={inspector.legajo} />
-          ))}
-        </Picker>
-      );
+          <Text style={styles.optionButtonText}>{`${inspector.nombre} ${inspector.apellido}`}</Text>
+        </TouchableOpacity>
+      ));
     } else if (type === 'Sitio') {
-      return (
-        <Picker
-          selectedValue={denunciado}
-          onValueChange={(itemValue) => setDenunciado(itemValue)}
-          style={styles.picker}
+      options = sitios.map((sitio) => (
+        <TouchableOpacity
+          key={sitio.idSitio}
+          style={[
+            styles.optionButton,
+            denunciado === sitio.idSitio && styles.optionButtonSelected
+          ]}
+          onPress={() => { setDenunciado(sitio.idSitio); setShowModal(false); }}
         >
-          {sitios.map((sitio) => (
-            <Picker.Item key={sitio.idSitio} label={sitio.descripcion} value={sitio.idSitio} />
-          ))}
-        </Picker>
-      );
+          <Text style={styles.optionButtonText}>{sitio.descripcion}</Text>
+        </TouchableOpacity>
+      ));
     }
-    return null;
+
+    return (
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showModal}
+        onRequestClose={() => setShowModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <ScrollView>{options}</ScrollView>
+            <TouchableOpacity onPress={() => setShowModal(false)} style={styles.modalCloseButton}>
+              <Text style={styles.modalCloseButtonText}>Cerrar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    );
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.title}>Crear Denuncia</Text>
       <TextInput
         style={styles.input}
@@ -126,17 +151,15 @@ const AddDenunciaScreen = ({ navigation }) => {
         onChangeText={setDescription}
         placeholderTextColor="#9A9A9A"
       />
-      <TouchableOpacity onPress={showDatepicker} style={styles.dateButton}>
+      <TouchableOpacity onPress={showDatePicker} style={styles.dateButton}>
         <Text style={styles.dateButtonText}>Seleccionar Fecha</Text>
       </TouchableOpacity>
-      {showDatePicker && (
-        <DateTimePicker
-          value={date}
-          mode="date"
-          display="default"
-          onChange={onDateChange}
-        />
-      )}
+      <DateTimePickerModal
+        isVisible={isDatePickerVisible}
+        mode="date"
+        onConfirm={handleConfirm}
+        onCancel={hideDatePicker}
+      />
       <Text style={styles.selectedDate}>Fecha seleccionada: {date.toLocaleDateString()}</Text>
       <TextInput
         style={styles.input}
@@ -145,15 +168,41 @@ const AddDenunciaScreen = ({ navigation }) => {
         onChangeText={setPlace}
         placeholderTextColor="#9A9A9A"
       />
-      <Picker
-        selectedValue={type}
-        onValueChange={(itemValue) => setType(itemValue)}
-        style={styles.picker}
-      >
-        <Picker.Item label="Vecino" value="Vecino" />
-        <Picker.Item label="Inspector" value="Inspector" />
-        <Picker.Item label="Sitio" value="Sitio" />
-      </Picker>
+      <Text style={styles.label}>Tipo de Denunciado</Text>
+      <View style={styles.typeContainer}>
+        <TouchableOpacity
+          style={[
+            styles.typeButton,
+            type === 'Vecino' && styles.typeButtonSelected
+          ]}
+          onPress={() => setType('Vecino')}
+        >
+          <Text style={styles.typeButtonText}>Vecino</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.typeButton,
+            type === 'Inspector' && styles.typeButtonSelected
+          ]}
+          onPress={() => setType('Inspector')}
+        >
+          <Text style={styles.typeButtonText}>Inspector</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.typeButton,
+            type === 'Sitio' && styles.typeButtonSelected
+          ]}
+          onPress={() => setType('Sitio')}
+        >
+          <Text style={styles.typeButtonText}>Sitio</Text>
+        </TouchableOpacity>
+      </View>
+      {type && (
+        <TouchableOpacity onPress={() => setShowModal(true)} style={styles.selectButton}>
+          <Text style={styles.selectButtonText}>Seleccionar {type}</Text>
+        </TouchableOpacity>
+      )}
       {renderDenunciadoOptions()}
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.buttonAccept} onPress={handleAccept}>
@@ -163,7 +212,7 @@ const AddDenunciaScreen = ({ navigation }) => {
           <Text style={styles.buttonText}>Cancelar</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -213,12 +262,53 @@ const styles = StyleSheet.create({
     color: '#9A9A9A',
     marginBottom: 12,
   },
-  picker: {
-    height: 50,
+  label: {
+    fontSize: 16,
     color: '#FFFFFF',
-    backgroundColor: '#333333',
+    marginBottom: 5,
+    marginTop: 15,
+  },
+  typeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     marginBottom: 15,
+  },
+  typeButton: {
+    padding: 10,
     borderRadius: 10,
+    backgroundColor: '#333333',
+  },
+  typeButtonSelected: {
+    backgroundColor: '#007BFF',
+  },
+  typeButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+  },
+  optionButton: {
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: '#333333',
+    marginBottom: 5,
+  },
+  optionButtonSelected: {
+    backgroundColor: '#007BFF',
+  },
+  optionButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+  },
+  selectButton: {
+    backgroundColor: '#007BFF',
+    padding: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  selectButtonText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -246,6 +336,30 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 18,
+    fontWeight: 'bold',
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContainer: {
+    width: '80%',
+    backgroundColor: '#1F1F1F',
+    padding: 20,
+    borderRadius: 10,
+  },
+  modalCloseButton: {
+    marginTop: 20,
+    backgroundColor: '#007BFF',
+    padding: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalCloseButtonText: {
+    color: '#FFF',
+    fontSize: 16,
     fontWeight: 'bold',
   },
 });

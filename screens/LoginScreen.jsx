@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({ navigation }) => {
   const [id, setId] = useState('');
@@ -14,8 +15,14 @@ const LoginScreen = ({ navigation }) => {
         password
       });
       if (response.data === 'VECINO') {
+        const user = { id, role: 'VECINO' };
+        await AsyncStorage.setItem('user', JSON.stringify(user));
+        console.log('Datos guardados: ', user);
         navigation.navigate('Home');
       } else if (response.data === 'INSPECTOR') {
+        const user = { id, role: 'INSPECTOR' };
+        await AsyncStorage.setItem('user', JSON.stringify(user));
+        console.log('Datos guardados: ', user);
         navigation.navigate('Inspector');
       } else {
         setMessage('Credenciales inválidas');
