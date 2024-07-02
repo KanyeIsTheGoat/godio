@@ -1,9 +1,24 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import axios from 'axios';
 
-const RegistrationScreen = ({ navigation }) => {
-  const [name, setName] = useState('');
+const RegisterScreen = ({ navigation }) => {
+  const [nombre, setNombre] = useState('');
+  const [apellido, setApellido] = useState('');
+  const [direccion, setDireccion] = useState('');
   const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleRegister = async () => {
+    try {
+      const response = await axios.post('http://localhost:8080/register/vecino', {
+        nombre, apellido, direccion, email
+      });
+      setMessage(response.data);
+    } catch (error) {
+      setMessage('Error al registrarse');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -14,20 +29,35 @@ const RegistrationScreen = ({ navigation }) => {
           style={styles.input}
           placeholder="Nombre"
           placeholderTextColor="#9A9A9A"
-          value={name}
-          onChangeText={setName}
+          value={nombre}
+          onChangeText={setNombre}
         />
         <TextInput
           style={styles.input}
-          placeholder="Email"
+          placeholder="Apellido"
+          placeholderTextColor="#9A9A9A"
+          value={apellido}
+          onChangeText={setApellido}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Dirección"
+          placeholderTextColor="#9A9A9A"
+          value={direccion}
+          onChangeText={setDireccion}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Correo electrónico"
           placeholderTextColor="#9A9A9A"
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
         />
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity style={styles.button} onPress={handleRegister}>
           <Text style={styles.buttonText}>Registrarse</Text>
         </TouchableOpacity>
+        {message ? <Text style={styles.message}>{message}</Text> : null}
         <TouchableOpacity onPress={() => navigation.navigate('Login')}>
           <Text style={styles.signUp}>Iniciar Sesión</Text>
         </TouchableOpacity>
@@ -91,6 +121,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
   },
+  message: {
+    color: '#FFFFFF',
+    textAlign: 'center',
+    fontSize: 16,
+    marginTop: 10,
+  },
 });
 
-export default RegistrationScreen;
+export default RegisterScreen;
