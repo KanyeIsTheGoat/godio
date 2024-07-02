@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
@@ -33,6 +33,18 @@ const CustomDrawerContent = (props) => {
 
 const HomeScreen = ({ navigation }) => {
   const [activeMenu, setActiveMenu] = useState('');
+  const [userName, setUserName] = useState(''); // Estado para almacenar el nombre del usuario
+
+  useEffect(() => {
+    // Simulación de obtención del nombre del usuario desde la base de datos
+    // Reemplazar esto con la lógica de obtención real de datos
+    const fetchUserName = async () => {
+      const fetchedName = 'Jane Doe'; // Supongamos que obtuvimos este nombre desde la base de datos
+      setUserName(fetchedName);
+    };
+
+    fetchUserName();
+  }, []);
 
   const handleMenuPress = (menu) => {
     setActiveMenu(menu);
@@ -51,10 +63,10 @@ const HomeScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
       <View style={styles.content}>
-        <Text style={styles.welcomeMessage}>Municipalidad de San Isidro</Text>
+        <Text style={styles.welcomeMessage}>Bienvenido, {userName}</Text>
+        <Text style={styles.subtitle}>Municipalidad de San Isidro</Text>
         <Image source={require('../assets/municipio.jpg')} style={styles.image} />
       </View>
-
       <View style={styles.menu}>
         <TouchableOpacity
           style={[
@@ -115,6 +127,8 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     fontSize: 18,
     color: '#FFFFFF',
+    fontWeight: 'bold',
+    fontFamily: 'Roboto-Bold', // Cambia esto a la fuente que deseas usar
   },
   content: {
     flex: 1,
@@ -123,6 +137,13 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   welcomeMessage: {
+    fontSize: 24,
+    color: '#FFFFFF',
+    marginBottom: 10,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  subtitle: {
     fontSize: 30,
     color: '#FFFFFF',
     marginBottom: 20,
