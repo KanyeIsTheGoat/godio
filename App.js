@@ -19,6 +19,8 @@ import MisReclamosScreen from './screens/MisReclamosScreen';
 import NotificationsScreen from './screens/NotificationsScreen';
 import InspectorScreen from './screens/InspectorScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
+import PublicoScreen from './screens/PublicoScreen';
+
 
 const Stack = createStackNavigator();
 
@@ -52,6 +54,7 @@ export default function App() {
         <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ title: 'Notificaciones' }} />
         <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ title: 'Welcome' }} />
         <Stack.Screen name="Inspector" component={InspectorScreen} options={{ title: 'Inspector' }} />
+        <Stack.Screen name="Publico" component={PublicoScreen} options={{ title: 'Publico' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
