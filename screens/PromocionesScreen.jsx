@@ -19,7 +19,7 @@ const PromocionesScreen = ({ navigation }) => {
             const data = await fetchPromociones();
             setPromociones(data);
           } catch (error) {
-            console.error("Error Cargando promociones", error);
+            console.error("Error cargando promociones", error);
           }
         };
 

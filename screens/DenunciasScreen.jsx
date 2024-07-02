@@ -27,7 +27,7 @@ const DenunciasScreen = ({ navigation }) => {
   );
 
   const renderDenunciaItem = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('DenunciaDetail', { id: item.idDenuncia })}>
+    <TouchableOpacity onPress={() => navigation.navigate('DenunciaDetail', { denuncia : item })}>
       <View style={styles.denunciaItem}>
         <Text style={styles.denunciaTitle}>{item.titulo || 'Sin título'}</Text>
         <Text style={styles.denunciaDescription}>{item.descripcion || 'Sin descripción'}</Text>
@@ -35,17 +35,9 @@ const DenunciasScreen = ({ navigation }) => {
     </TouchableOpacity>
   );
 
-  const toggleFilterVisibility = () => {
-    setFilterModalVisible(!filterModalVisible);
-  };
-
-  const applyFilters = () => {
-    setFilterModalVisible(false);
-  };
-
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.filterButton} onPress={toggleFilterVisibility}>
+      <TouchableOpacity style={styles.filterButton} onPress={() => setFilterModalVisible(true)}>
         <Ionicons name="filter-outline" size={24} color="white" />
       </TouchableOpacity>
       <FlatList
@@ -92,7 +84,7 @@ const DenunciasScreen = ({ navigation }) => {
               onChangeText={text => setFilters({ ...filters, type: text })}
               placeholderTextColor="#9A9A9A"
             />
-            <TouchableOpacity style={styles.closeButton} onPress={applyFilters}>
+            <TouchableOpacity style={styles.closeButton} onPress={() => setFilterModalVisible(false)}>
               <Text style={styles.closeButtonText}>Aplicar Filtros</Text>
             </TouchableOpacity>
           </View>

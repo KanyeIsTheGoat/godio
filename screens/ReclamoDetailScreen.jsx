@@ -1,51 +1,85 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
-const ReclamoDetailScreen = ({ route }) => {
-  const { reclamo } = route.params;
+const ReclamoDetailScreen = ({ route, navigation }) => {
+  const { reclamo, sitio } = route.params;
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{reclamo.title}</Text>
-      <View style={styles.detailContainer}>
-        <Text style={styles.label}>Description:</Text>
-        <Text style={styles.value}>{reclamo.description}</Text>
-      </View>
-      <View style={styles.detailContainer}>
-        <Text style={styles.label}>Address:</Text>
-        <Text style={styles.value}>{reclamo.address}</Text>
-      </View>
+  <ScrollView style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>{reclamo.desperfecto}</Text>
+        </View>
+    <View style={styles.detailContainer}>
+
+        <Text style={styles.label}>Desperfecto:</Text>
+        <Text style={styles.value}>{reclamo.desperfecto}</Text>
+
+        <Text style={styles.label}>Descripción:</Text>
+        <Text style={styles.value}>{reclamo.descripcion}</Text>
+
+
+        <Text style={styles.label}>Lugar:</Text>
+        {/*}<Text style={styles.value}>{sitio.direccion}</Text>*/}
+
+        <Text style={styles.label}>Fotos:</Text>
+                {reclamo.photos && reclamo.photos.length > 0 ? (
+                  reclamo.photos.map((photo, index) => (
+                    <View key={index} style={styles.imageContainer}>
+                      <Image source={{ uri: photo }} style={styles.image} />
+                    </View>
+                  ))
+                ) : (
+                  <Text style={styles.value}>No hay fotos disponibles</Text>
+                )}
+
     </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     backgroundColor: '#1F1F1F',
   },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: '#333333',
+  },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#FFFFFF',
-    marginBottom: 20,
-    textAlign: 'center',
+    marginLeft: 10,
   },
   detailContainer: {
-    marginBottom: 20,
+    padding: 16,
+    backgroundColor: '#333333',
+    borderRadius: 10,
+    margin: 16,
   },
   label: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#9A9A9A',
-    marginBottom: 5,
+    color: '#1E90FF',
+    marginTop: 10,
   },
   value: {
     fontSize: 16,
     color: '#FFFFFF',
-    backgroundColor: '#333333',
-    padding: 10,
+    marginBottom: 10,
+  },
+  imageContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  image: {
+    width: 300,
+    height: 200,
     borderRadius: 10,
   },
 });
