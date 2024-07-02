@@ -1,34 +1,55 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import axios from 'axios';
 
 const LoginScreen = ({ navigation }) => {
-  const [email, setEmail] = useState('');
+  const [id, setId] = useState('');
   const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post('http://192.168.0.244:8080/auth/login', {
+        id,
+        password
+      });
+      if (response.data === 'VECINO') {
+        navigation.navigate('Home');
+      } else if (response.data === 'INSPECTOR') {
+        navigation.navigate('Inspector');
+      } else {
+        setMessage('Credenciales inválidas');
+      }
+    } catch (error) {
+      setMessage('Error al iniciar sesión');
+    }
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.formContainer}>
         <Text style={styles.title}>Iniciar Sesión</Text>
-        <Text style={styles.subtitle}>Ingrese su mail y contraseña</Text>
+        <Text style={styles.subtitle}>Ingrese su documento o legajo y contraseña</Text>
         <TextInput
           style={styles.input}
-          placeholder="Email"
+          placeholder="Documento o Legajo"
           placeholderTextColor="#9A9A9A"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
+          value={id}
+          onChangeText={setId}
+          keyboardType="numeric"
         />
         <TextInput
           style={styles.input}
-          placeholder="Password"
+          placeholder="Contraseña"
           placeholderTextColor="#9A9A9A"
           value={password}
           onChangeText={setPassword}
           secureTextEntry
         />
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Iniciar Sesión</Text>
         </TouchableOpacity>
+        {message ? <Text style={styles.message}>{message}</Text> : null}
         <TouchableOpacity onPress={() => navigation.navigate('Register')}>
           <Text style={styles.signUp}>Registrarse</Text>
         </TouchableOpacity>
@@ -91,6 +112,12 @@ const styles = StyleSheet.create({
     color: '#1E90FF',
     textAlign: 'center',
     fontSize: 16,
+  },
+  message: {
+    color: '#FFFFFF',
+    textAlign: 'center',
+    fontSize: 16,
+    marginTop: 10,
   },
 });
 

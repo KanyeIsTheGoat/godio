@@ -17,6 +17,8 @@ import AddDenunciaScreen from './screens/AddDenunciaScreen';
 import MisDenunciasScreen from './screens/MisDenunciasScren';
 import MisReclamosScreen from './screens/MisReclamosScreen';
 import NotificationsScreen from './screens/NotificationsScreen';
+import InspectorScreen from './screens/InspectorScreen';
+import WelcomeScreen from './screens/WelcomeScreen';
 
 const Stack = createStackNavigator();
 
@@ -24,7 +26,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Login"
+        initialRouteName="Welcome"
         screenOptions={{
           headerStyle: {
             backgroundColor: '#1F1F1F',
@@ -48,6 +50,8 @@ export default function App() {
         <Stack.Screen name="MisDenuncias" component={MisDenunciasScreen} options={{ title: 'Mis Denuncias' }} />
         <Stack.Screen name="MisReclamos" component={MisReclamosScreen} options={{ title: 'Mis Reclamos' }} />
         <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ title: 'Notificaciones' }} />
+        <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ title: 'Welcome' }} />
+        <Stack.Screen name="Inspector" component={InspectorScreen} options={{ title: 'Inspector' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
