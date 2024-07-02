@@ -34,11 +34,7 @@ const DenunciaDetailScreen = ({ route, navigation }) => {
         <Text style={styles.label}>Fecha y Hora:</Text>
         <Text style={styles.value}>{new Date(denuncia.fechaHora).toLocaleString()}</Text>
       </View>
-      <View style={styles.detailContainer}>
-        <Text style={styles.label}>Denunciante:</Text>
-        <Text style={styles.value}>{denuncia.denunciante ? `${denuncia.denunciante.nombre} ${denuncia.denunciante.apellido}` : 'Sin denunciante'}</Text>
-      </View>
-      
+
       {denuncia.sitioDenunciado && (
         <View style={styles.detailContainer}>
           <Text style={styles.label}>Sitio Denunciado:</Text>

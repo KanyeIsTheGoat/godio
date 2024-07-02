@@ -12,15 +12,15 @@ const ReclamoDetailScreen = ({ route, navigation }) => {
         </View>
     <View style={styles.detailContainer}>
 
-        <Text style={styles.label}>Desperfecto:</Text>
-        <Text style={styles.value}>{reclamo.desperfecto}</Text>
-
         <Text style={styles.label}>Descripción:</Text>
         <Text style={styles.value}>{reclamo.descripcion}</Text>
 
 
         <Text style={styles.label}>Lugar:</Text>
-        {/*}<Text style={styles.value}>{sitio.direccion}</Text>*/}
+        <Text style={styles.value}>{`${reclamo.sitio.direccion}`}</Text>
+
+        <Text style={styles.label}>Tipo:</Text>
+        <Text style={styles.value}>{reclamo.tipoReclamo}</Text>
 
         <Text style={styles.label}>Fotos:</Text>
                 {reclamo.photos && reclamo.photos.length > 0 ? (
