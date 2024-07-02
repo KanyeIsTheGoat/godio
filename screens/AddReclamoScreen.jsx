@@ -3,27 +3,49 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ScrollView 
 import { Ionicons } from '@expo/vector-icons';
 
 const AddReclamoScreen = ({ navigation }) => {
-  const [title, setTitle] = useState('');
-  const [desperfectoType, setDesperfectoType] = useState('');
-  const [ubicacion, setUbicacion] = useState('');
-  const [description, setDescription] = useState('');
+  const [desperfecto, setDesperfecto] = useState('');
+  const [descripcion, setDescripcion] = useState('');
+  {/*const [lugar, setLugar] = useState('');*/}
+  const [tipoReclamo, setTipo] = useState('');
   const [photos, setPhotos] = useState([]);
 
-  const handleAccept = () => {
-    // Add logic to save the desperfecto
-    Alert.alert('Desperfecto Added', 'The desperfecto has been added successfully.');
-    navigation.goBack(); // Navigate back to the previous screen
-  };
 
-  const handleCancel = () => {
-    navigation.goBack(); // Navigate back to the previous screen
-  };
+  const handleAccept = async () => {
+      try {
+        const response = await fetch('http://192.168.0.18:8080/api/reclamos', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            descripcion : descripcion,
+            tipoReclamo : tipoReclamo,
+            desperfecto : desperfecto
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Error al crear el reclamo');
+        }
+
+        Alert.alert('Promoción Creada', 'El reclamo ha sido creada exitosamente.');
+        navigation.goBack(); // Regresar a la pantalla anterior
+      } catch (error) {
+        console.error('Error al crear el reclamo:', error);
+        Alert.alert('Error', 'Hubo un problema al intentar crear el reclamo. Por favor, intenta nuevamente más tarde.');
+      }
+    };
+
+      const handleCancel = () => {
+        navigation.goBack(); // Regresar a la pantalla anterior
+      };
+
 
   const handleAddPhoto = () => {
     if (photos.length < 5) {
       // Logic to add a photo
     } else {
-      Alert.alert('Maximum Reached', 'You can only add up to 5 photos.');
+      Alert.alert('Máximo Alcanzado', 'Solo puedes agregar hasta 5 fotos.');
     }
   };
 
@@ -32,30 +54,30 @@ const AddReclamoScreen = ({ navigation }) => {
       <Text style={styles.title}>Crear Reclamo</Text>
       <TextInput
         style={styles.input}
-        placeholder="Título"
-        value={title}
-        onChangeText={setTitle}
-        placeholderTextColor="#AAAAAA"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Tipo de Desperfecto"
-        value={desperfectoType}
-        onChangeText={setDesperfectoType}
-        placeholderTextColor="#AAAAAA"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Ubicación"
-        value={ubicacion}
-        onChangeText={setUbicacion}
+        placeholder="Desperfecto"
+        value={desperfecto}
+        onChangeText={setDesperfecto}
         placeholderTextColor="#AAAAAA"
       />
       <TextInput
         style={styles.input}
         placeholder="Descripción"
-        value={description}
-        onChangeText={setDescription}
+        value={descripcion}
+        onChangeText={setDescripcion}
+        placeholderTextColor="#AAAAAA"
+      />
+      {/*}<TextInput
+        style={styles.input}
+        placeholder="Ubicación"
+        value={lugar}
+        onChangeText={setLugar}
+        placeholderTextColor="#AAAAAA"
+      />*/}
+      <TextInput
+        style={styles.input}
+        placeholder="Tipo desperfecto"
+        value={tipoReclamo}
+        onChangeText={setTipo}
         multiline
         placeholderTextColor="#AAAAAA"
       />

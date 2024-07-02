@@ -46,11 +46,11 @@ const AddDenunciaScreen = ({ navigation }) => {
 
     try {
       await createDenuncia(newDenuncia);
-      Alert.alert('Denuncia Added', 'The denuncia has been added successfully.');
+      Alert.alert('Denuncia creada', 'La denuncia ha sido creada exitosamente.');
       navigation.goBack();
     } catch (error) {
-      Alert.alert('Error', 'There was an error adding the denuncia.');
-      console.error("Error creating denuncia", error);
+      Alert.alert('Error', 'Hubo un problema al intentar crear la denuncia. Por favor, intenta nuevamente más tarde.');
+      console.error("Hubo un problema al intentar crear la denuncia. Por favor, intenta nuevamente más tarde", error);
     }
   };
 
