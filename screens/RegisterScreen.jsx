@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-nativ
 import axios from 'axios';
 
 const RegisterScreen = ({ navigation }) => {
+  const [documento, setDocumento] = useState('');
   const [nombre, setNombre] = useState('');
   const [apellido, setApellido] = useState('');
   const [direccion, setDireccion] = useState('');
@@ -11,8 +12,8 @@ const RegisterScreen = ({ navigation }) => {
 
   const handleRegister = async () => {
     try {
-      const response = await axios.post('http://localhost:8080/register/vecino', {
-        nombre, apellido, direccion, email
+      const response = await axios.post('http://192.168.0.244:8080/register/vecino', {
+        documento, nombre, apellido, direccion, email
       });
       setMessage(response.data);
     } catch (error) {
@@ -25,6 +26,14 @@ const RegisterScreen = ({ navigation }) => {
       <View style={styles.formContainer}>
         <Text style={styles.title}>Registrarse</Text>
         <Text style={styles.subtitle}>Ingrese sus datos</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Documento"
+          placeholderTextColor="#9A9A9A"
+          value={documento}
+          onChangeText={setDocumento}
+          keyboardType="numeric"
+        />
         <TextInput
           style={styles.input}
           placeholder="Nombre"
