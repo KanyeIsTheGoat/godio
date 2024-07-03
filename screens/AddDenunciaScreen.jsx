@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, ScrollVi
 import axios from 'axios';
 import * as DocumentPicker from 'expo-document-picker';
 import RNPickerSelect from 'react-native-picker-select';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AddDenunciaScreen = ({ navigation }) => {
     const [titulo, setTitulo] = useState('');
@@ -10,29 +11,34 @@ const AddDenunciaScreen = ({ navigation }) => {
     const [causa, setCausa] = useState('');
     const [lugar, setLugar] = useState('');
     const [pruebas, setPruebas] = useState([]);
-    const [denunciaTipo, setDenunciaTipo] = useState('DenunciaSitio'); // Default type
+    const [denunciaTipo, setDenunciaTipo] = useState('DENUNCIA_SITIO');
     const [sitios, setSitios] = useState([]);
     const [vecinos, setVecinos] = useState([]);
     const [inspectores, setInspectores] = useState([]);
     const [denunciado, setDenunciado] = useState(null);
     const [denuncianteId, setDenuncianteId] = useState(null);
+    const [opcionesDenunciado, setOpcionesDenunciado] = useState([]);
 
     useEffect(() => {
-        // Fetch sitios, vecinos, inspectores and denuncianteId from backend or local storage
         const fetchData = async () => {
             try {
                 const sitioResponse = await axios.get('http://192.168.0.244:8080/api/sitios');
                 setSitios(sitioResponse.data);
+                console.log(sitioResponse.data);
                 
                 const vecinoResponse = await axios.get('http://192.168.0.244:8080/api/vecinos');
                 setVecinos(vecinoResponse.data);
+                console.log(vecinoResponse.data);
                 
                 const inspectorResponse = await axios.get('http://192.168.0.244:8080/api/inspectores');
                 setInspectores(inspectorResponse.data);
+                console.log(inspectorResponse.data);
                 
-                // Suppose denuncianteId is stored in local storage
-                const denuncianteId = await AsyncStorage.getItem('denuncianteId');
-                setDenuncianteId(denuncianteId);
+                const userData = await AsyncStorage.getItem('user');
+                if (userData) {
+                    const parsedData = JSON.parse(userData);
+                    setDenuncianteId(parsedData.id);
+                }
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -41,12 +47,27 @@ const AddDenunciaScreen = ({ navigation }) => {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        switch (denunciaTipo) {
+            case 'DENUNCIA_SITIO':
+                setOpcionesDenunciado(sitios.map(sitio => ({ label: sitio.direccion, value: sitio.idSitio })));
+                break;
+            case 'DENUNCIA_VECINO':
+                setOpcionesDenunciado(vecinos.map(vecino => ({ label: vecino.nombre, value: vecino.documento })));
+                break;
+            case 'DENUNCIA_INSPECTOR':
+                setOpcionesDenunciado(inspectores.map(inspector => ({ label: inspector.nombre, value: inspector.legajo })));
+                break;
+            default:
+                setOpcionesDenunciado([]);
+                break;
+        }
+    }, [denunciaTipo, sitios, vecinos, inspectores]);
+
     const handleFilePicker = async () => {
         try {
             let result = await DocumentPicker.getDocumentAsync({ multiple: true });
-            if (!result.canceled && result.assets) {
-                setPruebas([...pruebas, ...result.assets]);
-            }
+            setPruebas([...pruebas, ...result.assets]);
         } catch (err) {
             console.log('Error picking document:', err);
         }
@@ -56,46 +77,46 @@ const AddDenunciaScreen = ({ navigation }) => {
         setPruebas(pruebas.filter(file => file.uri !== uri));
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const formData = new FormData();
-        formData.append('titulo', titulo);
         formData.append('descripcion', descripcion);
+        formData.append('estadoDenuncia', 'ACTIVA');
+        formData.append('tipoDenuncia', denunciaTipo);
+        formData.append('titulo', titulo);
         formData.append('causa', causa);
         formData.append('lugar', lugar);
-        formData.append('estadoDenuncia', 'PENDING');
-        formData.append('tipoDenuncia', denunciaTipo);
-        formData.append('denunciante_id', denuncianteId);
+        formData.append('denuncianteId', denuncianteId);
 
-        if (denunciaTipo === 'DenunciaSitio') {
-            formData.append('sitio_id', denunciado);
-        } else if (denunciaTipo === 'DenunciaVecino') {
-            formData.append('denunciado_id', denunciado);
-        } else if (denunciaTipo === 'DenunciaInspector') {
-            formData.append('inspector_id', denunciado);
+        if (denunciaTipo === 'DENUNCIA_SITIO' && denunciado) {
+            formData.append('sitioId', denunciado);
+        } else if (denunciaTipo === 'DENUNCIA_VECINO' && denunciado) {
+            formData.append('denunciadoId', denunciado);
+        } else if (denunciaTipo === 'DENUNCIA_INSPECTOR' && denunciado) {
+            formData.append('inspectorId', denunciado);
         }
 
         pruebas.forEach((file, index) => {
-            formData.append(`pruebas[${index}]`, {
+            const fileToUpload = {
                 uri: file.uri,
-                type: file.mimeType,
-                name: file.name
-            });
+                type: file.mimeType || 'application/octet-stream',
+                name: file.name || `file-${index}`
+            };
+            formData.append('file', fileToUpload);
         });
 
-        axios.post('http://192.168.0.244:8080/api/denuncias', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        })
-            .then(response => {
-                console.log('Denuncia added successfully', response.data);
-                Alert.alert('Denuncia Añadida', 'La denuncia se ha añadido correctamente.');
-                navigation.goBack();
-            })
-            .catch(error => {
-                console.error('There was an error adding the denuncia!', error);
-                Alert.alert('Error', 'Hubo un error al añadir la denuncia.');
+        try {
+            const response = await axios.post('http://192.168.0.244:8080/api/denuncias/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
             });
+            console.log('Denuncia added successfully', response.data);
+            Alert.alert('Denuncia Añadida', 'La denuncia se ha añadido correctamente.');
+            navigation.goBack();
+        } catch (error) {
+            console.error('There was an error adding the denuncia!', error);
+            Alert.alert('Error', 'Hubo un error al añadir la denuncia.');
+        }
     };
 
     const renderFileItem = ({ item }) => (
@@ -143,25 +164,24 @@ const AddDenunciaScreen = ({ navigation }) => {
                 <RNPickerSelect
                     onValueChange={(value) => setDenunciaTipo(value)}
                     items={[
-                        { label: 'Denuncia Sitio', value: 'DenunciaSitio' },
-                        { label: 'Denuncia Vecino', value: 'DenunciaVecino' },
-                        { label: 'Denuncia Inspector', value: 'DenunciaInspector' },
+                        { label: 'Denuncia Sitio', value: 'DENUNCIA_SITIO' },
+                        { label: 'Denuncia Vecino', value: 'DENUNCIA_VECINO' },
+                        { label: 'Denuncia Inspector', value: 'DENUNCIA_INSPECTOR' },
                     ]}
                     style={pickerSelectStyles}
+                    placeholder={{ label: "Seleccionar tipo de denuncia", value: null }}
                 />
             </View>
             <View style={styles.pickerContainer}>
                 <Text style={styles.pickerLabel}>Seleccionar:</Text>
                 <RNPickerSelect
-                    onValueChange={(value) => setDenunciado(value)}
-                    items={
-                        denunciaTipo === 'DenunciaSitio' ? 
-                        sitios.map(sitio => ({ label: sitio.direccion, value: sitio.id })) : 
-                        denunciaTipo === 'DenunciaVecino' ? 
-                        vecinos.map(vecino => ({ label: vecino.nombre, value: vecino.id })) : 
-                        inspectores.map(inspector => ({ label: inspector.nombre, value: inspector.id }))
-                    }
+                    onValueChange={(value) => { 
+                        console.log(value);
+                        setDenunciado(value);
+                    }}
+                    items={opcionesDenunciado}
                     style={pickerSelectStyles}
+                    placeholder={{ label: "Seleccionar denunciado", value: null }}
                 />
             </View>
             <TouchableOpacity onPress={handleFilePicker} style={styles.fileButton}>
@@ -287,7 +307,7 @@ const pickerSelectStyles = StyleSheet.create({
         borderColor: '#ccc',
         borderRadius: 4,
         color: 'white',
-        paddingRight: 30, // to ensure the text is never behind the icon
+        paddingRight: 30,
         backgroundColor: '#333333',
     },
     inputAndroid: {
@@ -298,7 +318,7 @@ const pickerSelectStyles = StyleSheet.create({
         borderColor: '#ccc',
         borderRadius: 8,
         color: 'white',
-        paddingRight: 30, // to ensure the text is never behind the icon
+        paddingRight: 30,
         backgroundColor: '#333333',
     },
 });
