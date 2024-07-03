@@ -10,7 +10,7 @@ const LoginScreen = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://192.168.0.244:8080/auth/login', {
+      const response = await axios.post('http://192.168.0.18:8080/auth/login', {
         id,
         password
       });
