@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ScrollView, Modal } from 'react-native';
+import * as DocumentPicker from 'expo-document-picker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { createDenuncia } from '../api/denuncias';
+import axios from 'axios';
 import { fetchVecinos, fetchInspectores, fetchSitios } from '../api/denuncias';
 
 const AddDenunciaScreen = ({ navigation }) => {
@@ -16,6 +17,7 @@ const AddDenunciaScreen = ({ navigation }) => {
   const [inspectores, setInspectores] = useState([]);
   const [sitios, setSitios] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [file, setFile] = useState(null);
 
   useEffect(() => {
     const loadOptions = async () => {
@@ -34,28 +36,57 @@ const AddDenunciaScreen = ({ navigation }) => {
     loadOptions();
   }, []);
 
-  const handleAccept = async () => {
-    const newDenuncia = {
-      causa: cause,
-      descripcion: description,
-      fechaHora: date,
-      lugar: place,
-      tipoDenuncia: type,
-      denunciado
-    };
-
+  const pickFile = async () => {
     try {
-      await createDenuncia(newDenuncia);
-      Alert.alert('Denuncia creada', 'La denuncia ha sido creada exitosamente.');
-      navigation.goBack();
+      const result = await DocumentPicker.getDocumentAsync({});
+      if (result.type === 'success') {
+        setFile(result);
+      }
     } catch (error) {
-      Alert.alert('Error', 'Hubo un problema al intentar crear la denuncia. Por favor, intenta nuevamente más tarde.');
-      console.error("Hubo un problema al intentar crear la denuncia. Por favor, intenta nuevamente más tarde", error);
+      console.error("Error picking file: ", error);
     }
   };
+  
+  const removeFile = () => {
+    setFile(null);
+  };
+  
 
-  const handleCancel = () => {
-    navigation.goBack();
+  const handleAccept = async () => {
+    if (!file) {
+      Alert.alert('Error', 'Por favor, seleccione un archivo antes de guardar la denuncia.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('descripcion', description);
+    formData.append('estadoDenuncia', 'PENDIENTE');
+    formData.append('tipoDenuncia', type);
+    formData.append('titulo', '');
+    formData.append('causa', cause);
+    formData.append('lugar', place);
+    formData.append('sitioId', 1);
+    formData.append('denunciadoId', 1);
+    formData.append('denuncianteId', 1);
+    formData.append('inspectorId', 1);
+    formData.append('file', {
+      uri: file.uri,
+      type: file.mimeType,
+      name: file.name,
+    });
+
+    try {
+      await axios.post('http://<your-backend-url>/api/denuncias/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      Alert.alert('Denuncia Added', 'The denuncia has been added successfully.');
+      navigation.goBack();
+    } catch (error) {
+      Alert.alert('Error', 'There was an error adding the denuncia.');
+      console.error("Error creating denuncia", error);
+    }
   };
 
   const showDatePicker = () => {
@@ -168,6 +199,19 @@ const AddDenunciaScreen = ({ navigation }) => {
         onChangeText={setPlace}
         placeholderTextColor="#9A9A9A"
       />
+      <TouchableOpacity onPress={pickFile} style={styles.fileButton}>
+        <Text style={styles.fileButtonText}>Seleccionar Archivo</Text>
+      </TouchableOpacity>
+      {file ? (
+    <View style={styles.fileItem}>
+    <Text style={styles.selectedFile}>{file.name}</Text>
+    <TouchableOpacity onPress={removeFile} style={styles.removeFileButton}>
+      <Text style={styles.removeFileButtonText}>X</Text>
+    </TouchableOpacity>
+  </View>
+) : (
+  <Text style={styles.noFileSelected}>No se ha seleccionado ningún archivo.</Text>
+)}
       <Text style={styles.label}>Tipo de Denunciado</Text>
       <View style={styles.typeContainer}>
         <TouchableOpacity
@@ -208,7 +252,7 @@ const AddDenunciaScreen = ({ navigation }) => {
         <TouchableOpacity style={styles.buttonAccept} onPress={handleAccept}>
           <Text style={styles.buttonText}>Aceptar</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonCancel} onPress={handleCancel}>
+        <TouchableOpacity style={styles.buttonCancel} onPress={() => navigation.goBack()}>
           <Text style={styles.buttonText}>Cancelar</Text>
         </TouchableOpacity>
       </View>
@@ -239,11 +283,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#333333',
     color: '#FFFFFF',
     fontSize: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 2,
   },
   dateButton: {
     backgroundColor: '#007BFF',
@@ -261,6 +300,38 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#9A9A9A',
     marginBottom: 12,
+  },
+  fileButton: {
+    backgroundColor: '#007BFF',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  fileButtonText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  fileItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  selectedFile: {
+    fontSize: 16,
+    color: '#9A9A9A',
+    flex: 1,
+  },
+  removeFileButton: {
+    backgroundColor: '#dc3545',
+    padding: 5,
+    borderRadius: 10,
+    marginLeft: 10,
+  },
+  removeFileButtonText: {
+    color: '#FFF',
+    fontSize: 16,
   },
   label: {
     fontSize: 16,
