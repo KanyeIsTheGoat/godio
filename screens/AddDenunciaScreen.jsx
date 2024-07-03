@@ -1,438 +1,306 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ScrollView, Modal } from 'react-native';
-import * as DocumentPicker from 'expo-document-picker';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, ScrollView, Alert } from 'react-native';
 import axios from 'axios';
-import { fetchVecinos, fetchInspectores, fetchSitios } from '../api/denuncias';
+import * as DocumentPicker from 'expo-document-picker';
+import RNPickerSelect from 'react-native-picker-select';
 
 const AddDenunciaScreen = ({ navigation }) => {
-  const [cause, setCause] = useState('');
-  const [description, setDescription] = useState('');
-  const [date, setDate] = useState(new Date());
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [place, setPlace] = useState('');
-  const [type, setType] = useState('');
-  const [denunciado, setDenunciado] = useState('');
-  const [vecinos, setVecinos] = useState([]);
-  const [inspectores, setInspectores] = useState([]);
-  const [sitios, setSitios] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [file, setFile] = useState(null);
+    const [titulo, setTitulo] = useState('');
+    const [descripcion, setDescripcion] = useState('');
+    const [causa, setCausa] = useState('');
+    const [lugar, setLugar] = useState('');
+    const [pruebas, setPruebas] = useState([]);
+    const [denunciaTipo, setDenunciaTipo] = useState('DenunciaSitio'); // Default type
+    const [sitios, setSitios] = useState([]);
+    const [vecinos, setVecinos] = useState([]);
+    const [inspectores, setInspectores] = useState([]);
+    const [denunciado, setDenunciado] = useState(null);
+    const [denuncianteId, setDenuncianteId] = useState(null);
 
-  useEffect(() => {
-    const loadOptions = async () => {
-      try {
-        const vecinosData = await fetchVecinos();
-        const inspectoresData = await fetchInspectores();
-        const sitiosData = await fetchSitios();
-        setVecinos(vecinosData);
-        setInspectores(inspectoresData);
-        setSitios(sitiosData);
-      } catch (error) {
-        console.error("Error loading options", error);
-      }
+    useEffect(() => {
+        // Fetch sitios, vecinos, inspectores and denuncianteId from backend or local storage
+        const fetchData = async () => {
+            try {
+                const sitioResponse = await axios.get('http://192.168.0.244:8080/api/sitios');
+                setSitios(sitioResponse.data);
+                
+                const vecinoResponse = await axios.get('http://192.168.0.244:8080/api/vecinos');
+                setVecinos(vecinoResponse.data);
+                
+                const inspectorResponse = await axios.get('http://192.168.0.244:8080/api/inspectores');
+                setInspectores(inspectorResponse.data);
+                
+                // Suppose denuncianteId is stored in local storage
+                const denuncianteId = await AsyncStorage.getItem('denuncianteId');
+                setDenuncianteId(denuncianteId);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+        
+        fetchData();
+    }, []);
+
+    const handleFilePicker = async () => {
+        try {
+            let result = await DocumentPicker.getDocumentAsync({ multiple: true });
+            if (!result.canceled && result.assets) {
+                setPruebas([...pruebas, ...result.assets]);
+            }
+        } catch (err) {
+            console.log('Error picking document:', err);
+        }
     };
 
-    loadOptions();
-  }, []);
+    const handleRemoveFile = (uri) => {
+        setPruebas(pruebas.filter(file => file.uri !== uri));
+    };
 
-  const pickFile = async () => {
-    try {
-      const result = await DocumentPicker.getDocumentAsync({});
-      if (result.type === 'success') {
-        setFile(result);
-      }
-    } catch (error) {
-      console.error("Error picking file: ", error);
-    }
-  };
-  
-  const removeFile = () => {
-    setFile(null);
-  };
-  
+    const handleSubmit = () => {
+        const formData = new FormData();
+        formData.append('titulo', titulo);
+        formData.append('descripcion', descripcion);
+        formData.append('causa', causa);
+        formData.append('lugar', lugar);
+        formData.append('estadoDenuncia', 'PENDING');
+        formData.append('tipoDenuncia', denunciaTipo);
+        formData.append('denunciante_id', denuncianteId);
 
-  const handleAccept = async () => {
-    if (!file) {
-      Alert.alert('Error', 'Por favor, seleccione un archivo antes de guardar la denuncia.');
-      return;
-    }
+        if (denunciaTipo === 'DenunciaSitio') {
+            formData.append('sitio_id', denunciado);
+        } else if (denunciaTipo === 'DenunciaVecino') {
+            formData.append('denunciado_id', denunciado);
+        } else if (denunciaTipo === 'DenunciaInspector') {
+            formData.append('inspector_id', denunciado);
+        }
 
-    const formData = new FormData();
-    formData.append('descripcion', description);
-    formData.append('estadoDenuncia', 'PENDIENTE');
-    formData.append('tipoDenuncia', type);
-    formData.append('titulo', '');
-    formData.append('causa', cause);
-    formData.append('lugar', place);
-    formData.append('sitioId', 1);
-    formData.append('denunciadoId', 1);
-    formData.append('denuncianteId', 1);
-    formData.append('inspectorId', 1);
-    formData.append('file', {
-      uri: file.uri,
-      type: file.mimeType,
-      name: file.name,
-    });
+        pruebas.forEach((file, index) => {
+            formData.append(`pruebas[${index}]`, {
+                uri: file.uri,
+                type: file.mimeType,
+                name: file.name
+            });
+        });
 
-    try {
-      await axios.post('http://<your-backend-url>/api/denuncias/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      Alert.alert('Denuncia Added', 'The denuncia has been added successfully.');
-      navigation.goBack();
-    } catch (error) {
-      Alert.alert('Error', 'There was an error adding the denuncia.');
-      console.error("Error creating denuncia", error);
-    }
-  };
+        axios.post('http://192.168.0.244:8080/api/denuncias', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+            .then(response => {
+                console.log('Denuncia added successfully', response.data);
+                Alert.alert('Denuncia Añadida', 'La denuncia se ha añadido correctamente.');
+                navigation.goBack();
+            })
+            .catch(error => {
+                console.error('There was an error adding the denuncia!', error);
+                Alert.alert('Error', 'Hubo un error al añadir la denuncia.');
+            });
+    };
 
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
-
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
-
-  const handleConfirm = (selectedDate) => {
-    setDate(selectedDate);
-    hideDatePicker();
-  };
-
-  const renderDenunciadoOptions = () => {
-    let options = [];
-
-    if (type === 'Vecino') {
-      options = vecinos.map((vecino) => (
-        <TouchableOpacity
-          key={vecino.documento}
-          style={[
-            styles.optionButton,
-            denunciado === vecino.documento && styles.optionButtonSelected
-          ]}
-          onPress={() => { setDenunciado(vecino.documento); setShowModal(false); }}
-        >
-          <Text style={styles.optionButtonText}>{`${vecino.nombre} ${vecino.apellido}`}</Text>
-        </TouchableOpacity>
-      ));
-    } else if (type === 'Inspector') {
-      options = inspectores.map((inspector) => (
-        <TouchableOpacity
-          key={inspector.legajo}
-          style={[
-            styles.optionButton,
-            denunciado === inspector.legajo && styles.optionButtonSelected
-          ]}
-          onPress={() => { setDenunciado(inspector.legajo); setShowModal(false); }}
-        >
-          <Text style={styles.optionButtonText}>{`${inspector.nombre} ${inspector.apellido}`}</Text>
-        </TouchableOpacity>
-      ));
-    } else if (type === 'Sitio') {
-      options = sitios.map((sitio) => (
-        <TouchableOpacity
-          key={sitio.idSitio}
-          style={[
-            styles.optionButton,
-            denunciado === sitio.idSitio && styles.optionButtonSelected
-          ]}
-          onPress={() => { setDenunciado(sitio.idSitio); setShowModal(false); }}
-        >
-          <Text style={styles.optionButtonText}>{sitio.descripcion}</Text>
-        </TouchableOpacity>
-      ));
-    }
+    const renderFileItem = ({ item }) => (
+        <View style={styles.fileItem}>
+            <Text style={styles.selectedFile}>{item.name}</Text>
+            <TouchableOpacity onPress={() => handleRemoveFile(item.uri)} style={styles.removeFileButton}>
+                <Text style={styles.removeFileButtonText}>X</Text>
+            </TouchableOpacity>
+        </View>
+    );
 
     return (
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={showModal}
-        onRequestClose={() => setShowModal(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
-            <ScrollView>{options}</ScrollView>
-            <TouchableOpacity onPress={() => setShowModal(false)} style={styles.modalCloseButton}>
-              <Text style={styles.modalCloseButtonText}>Cerrar</Text>
+        <ScrollView style={styles.container}>
+            <Text style={styles.title}>Crear Denuncia</Text>
+            <TextInput
+                style={styles.input}
+                placeholder="Titulo"
+                value={titulo}
+                onChangeText={setTitulo}
+                placeholderTextColor="#9A9A9A"
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="Descripcion"
+                value={descripcion}
+                onChangeText={setDescripcion}
+                placeholderTextColor="#9A9A9A"
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="Causa"
+                value={causa}
+                onChangeText={setCausa}
+                placeholderTextColor="#9A9A9A"
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="Lugar"
+                value={lugar}
+                onChangeText={setLugar}
+                placeholderTextColor="#9A9A9A"
+            />
+            <View style={styles.pickerContainer}>
+                <Text style={styles.pickerLabel}>Tipo de Denuncia:</Text>
+                <RNPickerSelect
+                    onValueChange={(value) => setDenunciaTipo(value)}
+                    items={[
+                        { label: 'Denuncia Sitio', value: 'DenunciaSitio' },
+                        { label: 'Denuncia Vecino', value: 'DenunciaVecino' },
+                        { label: 'Denuncia Inspector', value: 'DenunciaInspector' },
+                    ]}
+                    style={pickerSelectStyles}
+                />
+            </View>
+            <View style={styles.pickerContainer}>
+                <Text style={styles.pickerLabel}>Seleccionar:</Text>
+                <RNPickerSelect
+                    onValueChange={(value) => setDenunciado(value)}
+                    items={
+                        denunciaTipo === 'DenunciaSitio' ? 
+                        sitios.map(sitio => ({ label: sitio.direccion, value: sitio.id })) : 
+                        denunciaTipo === 'DenunciaVecino' ? 
+                        vecinos.map(vecino => ({ label: vecino.nombre, value: vecino.id })) : 
+                        inspectores.map(inspector => ({ label: inspector.nombre, value: inspector.id }))
+                    }
+                    style={pickerSelectStyles}
+                />
+            </View>
+            <TouchableOpacity onPress={handleFilePicker} style={styles.fileButton}>
+                <Text style={styles.fileButtonText}>Seleccionar Archivos</Text>
             </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+            <FlatList
+                data={pruebas}
+                renderItem={renderFileItem}
+                keyExtractor={(item) => item.uri}
+            />
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.buttonAccept} onPress={handleSubmit}>
+                    <Text style={styles.buttonText}>Aceptar</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.buttonCancel} onPress={() => navigation.goBack()}>
+                    <Text style={styles.buttonText}>Cancelar</Text>
+                </TouchableOpacity>
+            </View>
+        </ScrollView>
     );
-  };
-
-  return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Crear Denuncia</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Causa"
-        value={cause}
-        onChangeText={setCause}
-        placeholderTextColor="#9A9A9A"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Descripción"
-        value={description}
-        onChangeText={setDescription}
-        placeholderTextColor="#9A9A9A"
-      />
-      <TouchableOpacity onPress={showDatePicker} style={styles.dateButton}>
-        <Text style={styles.dateButtonText}>Seleccionar Fecha</Text>
-      </TouchableOpacity>
-      <DateTimePickerModal
-        isVisible={isDatePickerVisible}
-        mode="date"
-        onConfirm={handleConfirm}
-        onCancel={hideDatePicker}
-      />
-      <Text style={styles.selectedDate}>Fecha seleccionada: {date.toLocaleDateString()}</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Lugar"
-        value={place}
-        onChangeText={setPlace}
-        placeholderTextColor="#9A9A9A"
-      />
-      <TouchableOpacity onPress={pickFile} style={styles.fileButton}>
-        <Text style={styles.fileButtonText}>Seleccionar Archivo</Text>
-      </TouchableOpacity>
-      {file ? (
-    <View style={styles.fileItem}>
-    <Text style={styles.selectedFile}>{file.name}</Text>
-    <TouchableOpacity onPress={removeFile} style={styles.removeFileButton}>
-      <Text style={styles.removeFileButtonText}>X</Text>
-    </TouchableOpacity>
-  </View>
-) : (
-  <Text style={styles.noFileSelected}>No se ha seleccionado ningún archivo.</Text>
-)}
-      <Text style={styles.label}>Tipo de Denunciado</Text>
-      <View style={styles.typeContainer}>
-        <TouchableOpacity
-          style={[
-            styles.typeButton,
-            type === 'Vecino' && styles.typeButtonSelected
-          ]}
-          onPress={() => setType('Vecino')}
-        >
-          <Text style={styles.typeButtonText}>Vecino</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.typeButton,
-            type === 'Inspector' && styles.typeButtonSelected
-          ]}
-          onPress={() => setType('Inspector')}
-        >
-          <Text style={styles.typeButtonText}>Inspector</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.typeButton,
-            type === 'Sitio' && styles.typeButtonSelected
-          ]}
-          onPress={() => setType('Sitio')}
-        >
-          <Text style={styles.typeButtonText}>Sitio</Text>
-        </TouchableOpacity>
-      </View>
-      {type && (
-        <TouchableOpacity onPress={() => setShowModal(true)} style={styles.selectButton}>
-          <Text style={styles.selectButtonText}>Seleccionar {type}</Text>
-        </TouchableOpacity>
-      )}
-      {renderDenunciadoOptions()}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.buttonAccept} onPress={handleAccept}>
-          <Text style={styles.buttonText}>Aceptar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonCancel} onPress={() => navigation.goBack()}>
-          <Text style={styles.buttonText}>Cancelar</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
-  );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#1F1F1F',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  input: {
-    height: 50,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    marginBottom: 15,
-    paddingHorizontal: 15,
-    borderRadius: 10,
-    backgroundColor: '#333333',
-    color: '#FFFFFF',
-    fontSize: 16,
-  },
-  dateButton: {
-    backgroundColor: '#007BFF',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  dateButtonText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  selectedDate: {
-    fontSize: 16,
-    color: '#9A9A9A',
-    marginBottom: 12,
-  },
-  fileButton: {
-    backgroundColor: '#007BFF',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  fileButtonText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  fileItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  selectedFile: {
-    fontSize: 16,
-    color: '#9A9A9A',
-    flex: 1,
-  },
-  removeFileButton: {
-    backgroundColor: '#dc3545',
-    padding: 5,
-    borderRadius: 10,
-    marginLeft: 10,
-  },
-  removeFileButtonText: {
-    color: '#FFF',
-    fontSize: 16,
-  },
-  label: {
-    fontSize: 16,
-    color: '#FFFFFF',
-    marginBottom: 5,
-    marginTop: 15,
-  },
-  typeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 15,
-  },
-  typeButton: {
-    padding: 10,
-    borderRadius: 10,
-    backgroundColor: '#333333',
-  },
-  typeButtonSelected: {
-    backgroundColor: '#007BFF',
-  },
-  typeButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-  },
-  optionButton: {
-    padding: 10,
-    borderRadius: 10,
-    backgroundColor: '#333333',
-    marginBottom: 5,
-  },
-  optionButtonSelected: {
-    backgroundColor: '#007BFF',
-  },
-  optionButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-  },
-  selectButton: {
-    backgroundColor: '#007BFF',
-    padding: 10,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginVertical: 10,
-  },
-  selectButtonText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 30,
-  },
-  buttonAccept: {
-    backgroundColor: '#007BFF',
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 10,
-    alignItems: 'center',
-    flex: 1,
-    marginRight: 10,
-  },
-  buttonCancel: {
-    backgroundColor: '#dc3545',
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 10,
-    alignItems: 'center',
-    flex: 1,
-    marginLeft: 10,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContainer: {
-    width: '80%',
-    backgroundColor: '#1F1F1F',
-    padding: 20,
-    borderRadius: 10,
-  },
-  modalCloseButton: {
-    marginTop: 20,
-    backgroundColor: '#007BFF',
-    padding: 10,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  modalCloseButtonText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
+    container: {
+        flex: 1,
+        padding: 20,
+        backgroundColor: '#1F1F1F',
+    },
+    title: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: '#FFFFFF',
+        marginBottom: 20,
+        textAlign: 'center',
+    },
+    input: {
+        height: 50,
+        borderColor: '#ccc',
+        borderWidth: 1,
+        marginBottom: 15,
+        paddingHorizontal: 15,
+        borderRadius: 10,
+        backgroundColor: '#333333',
+        color: '#FFFFFF',
+        fontSize: 16,
+    },
+    pickerContainer: {
+        marginBottom: 15,
+    },
+    pickerLabel: {
+        fontSize: 16,
+        color: '#9A9A9A',
+        marginBottom: 5,
+    },
+    fileButton: {
+        backgroundColor: '#007BFF',
+        padding: 15,
+        borderRadius: 10,
+        alignItems: 'center',
+        marginBottom: 12,
+    },
+    fileButtonText: {
+        color: '#FFF',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    fileItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    selectedFile: {
+        fontSize: 16,
+        color: '#9A9A9A',
+        flex: 1,
+    },
+    removeFileButton: {
+        backgroundColor: '#dc3545',
+        padding: 5,
+        borderRadius: 10,
+        marginLeft: 10,
+    },
+    removeFileButtonText: {
+        color: '#FFF',
+        fontSize: 16,
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 30,
+    },
+    buttonAccept: {
+        backgroundColor: '#007BFF',
+        paddingVertical: 15,
+        paddingHorizontal: 30,
+        borderRadius: 10,
+        alignItems: 'center',
+        flex: 1,
+        marginRight: 10,
+    },
+    buttonCancel: {
+        backgroundColor: '#dc3545',
+        paddingVertical: 15,
+        paddingHorizontal: 30,
+        borderRadius: 10,
+        alignItems: 'center',
+        flex: 1,
+        marginLeft: 10,
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+});
+
+const pickerSelectStyles = StyleSheet.create({
+    inputIOS: {
+        fontSize: 16,
+        paddingVertical: 12,
+        paddingHorizontal: 10,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 4,
+        color: 'white',
+        paddingRight: 30, // to ensure the text is never behind the icon
+        backgroundColor: '#333333',
+    },
+    inputAndroid: {
+        fontSize: 16,
+        paddingHorizontal: 10,
+        paddingVertical: 8,
+        borderWidth: 0.5,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        color: 'white',
+        paddingRight: 30, // to ensure the text is never behind the icon
+        backgroundColor: '#333333',
+    },
 });
 
 export default AddDenunciaScreen;

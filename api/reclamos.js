@@ -2,7 +2,7 @@ import api from "../api/api";
 
 export const fetchReclamos = async () => {
   try {
-    const response = await fetch('http://192.168.0.18:8080/api/reclamos');
+    const response = await fetch('http://192.168.0.244:8080/api/reclamos');
     const data = await response.json();
     return data;
   } catch (error) {
@@ -23,7 +23,7 @@ export const createReclamo = async (reclamo) => {
 
 export const fetchReclamoById = async (id) => {
   try {
-    const response = await fetch('http://192.168.0.18:8080/api/reclamos/${id}');
+    const response = await fetch('http://192.168.0.244:8080/api/reclamos/${id}');
     if (!response.ok) {
       throw new Error('Failed to fetch reclamo with id ${id}');
     }
