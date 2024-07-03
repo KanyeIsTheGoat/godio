@@ -2,11 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Modal, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { fetchPromociones} from '../api/promociones';
-
-/*const testData = [
-  { id: '1', title: 'Promotion 1', description: 'Description of promotion 1' },
-  
-];*/
+import RNPickerSelect from 'react-native-picker-select';
 
 const PromocionesScreen = ({ navigation }) => {
   const [filterModalVisible, setFilterModalVisible] = useState(false);
@@ -26,9 +22,9 @@ const PromocionesScreen = ({ navigation }) => {
         loadPromociones();
       }, []);
 
-const filteredPromociones = promociones.filter(
-    d => (d.titulo ? d.titulo.includes(filters.title) : true) &&
-         (d.tipoPromocion ? d.tipoPromocion.includes(filters.type) : true)
+  const filteredPromociones = promociones.filter(
+    d => (d.titulo ? d.titulo.toLowerCase().includes(filters.title.toLowerCase()) : true) &&
+         (d.tipoPromocion ? d.tipoPromocion.toLowerCase().includes(filters.type.toLowerCase()) : true)
   );
 
   const renderPromocionItem = ({ item }) => (
@@ -39,6 +35,11 @@ const filteredPromociones = promociones.filter(
       </View>
     </TouchableOpacity>
   );
+
+    const clearFilters = () => {
+      setFilters({ title: '', type: '' });
+      setFilterModalVisible(false);
+    };
 
   return (
     <View style={styles.container}>
@@ -75,13 +76,32 @@ const filteredPromociones = promociones.filter(
         <View style={styles.modalContainer}>
           <View style={styles.modalView}>
             <Text style={styles.modalTitle}>Filtros</Text>
-            <TextInput style={styles.input} placeholder="Buscar por titulo" placeholderTextColor="#9A9A9A" />
-            <TextInput style={styles.input} placeholder="Filtrar por tipo" placeholderTextColor="#9A9A9A" />
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => setFilterModalVisible(false)}
-            >
-              <Text style={styles.closeButtonText}>Aplicar</Text>
+            <TextInput
+            style={styles.input}
+            placeholder="Título"
+            placeholderTextColor="#9A9A9A"
+            value={filters.title}
+            onChangeText={text => setFilters({ ...filters, title: text })}
+            />
+            <RNPickerSelect
+              onValueChange={(value) => setFilters({ ...filters, type: value })}
+              items={[
+                { label: 'ACTIVA', value: 'ACTIVA' },
+                { label: 'CERRADA', value: 'CERRADA' },
+            // Añadir más tipos según sea necesario
+                ]}
+                style={pickerSelectStyles}
+                placeholder={{
+                   label: 'Seleccione Tipo',
+                   value: '',
+                   }}
+                value={filters.type}
+                />
+            <TouchableOpacity style={styles.closeButton} onPress={() => setFilterModalVisible(false)}>
+              <Text style={styles.closeButtonText}>Aplicar Filtros</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.clearButton} onPress={clearFilters}>
+             <Text style={styles.clearButtonText}>Eliminar Filtros</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -170,7 +190,8 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   input: {
-    height: 40,
+    height: 50,
+    fontSize: 17,
     backgroundColor: '#1F1F1F',
     borderRadius: 10,
     paddingHorizontal: 10,
@@ -186,6 +207,35 @@ const styles = StyleSheet.create({
   closeButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
+  },
+  clearButton: {
+    backgroundColor: '#FF0000',
+    padding: 10,
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  clearButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+  },
+});
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    height: 40,
+    backgroundColor: '#1F1F1F',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    color: '#FFFFFF',
+    marginBottom: 20,
+  },
+  inputAndroid: {
+    height: 40,
+    backgroundColor: '#1F1F1F',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    color: '#FFFFFF',
+    marginBottom: 20,
   },
 });
 

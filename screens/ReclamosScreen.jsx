@@ -1,18 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Modal, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import RNPickerSelect from 'react-native-picker-select';
 import { fetchReclamos } from '../api/reclamos';
-
-/*const testData = [
-  { id: '1', title: 'Reclamo 1', description: 'Description of reclamo 1' },
-  { id: '2', title: 'Reclamo 2', description: 'Description of reclamo 2' },
-  { id: '3', title: 'Reclamo 3', description: 'Description of reclamo 3' },
-];*/
 
 const ReclamosScreen = ({ navigation }) => {
   const [filterModalVisible, setFilterModalVisible] = useState(false);
-    const [filters, setFilters] = useState({ title: '', type: '' });
-    const [reclamos, setReclamos] = useState([]);
+  const [filters, setFilters] = useState({ title: '', type: '' });
+  const [reclamos, setReclamos] = useState([]);
 
   useEffect(() => {
     const loadReclamos = async () => {
@@ -26,13 +21,13 @@ const ReclamosScreen = ({ navigation }) => {
     loadReclamos();
   }, []);
 
-const filteredReclamos = reclamos.filter(
-    d => (d.titulo ? d.titulo.includes(filters.title) : true) &&
-         (d.tipoReclamo ? d.tipoReclamo.includes(filters.type) : true)
+  const filteredReclamos = reclamos.filter(
+    d => (d.desperfecto ? d.desperfecto.toLowerCase().includes(filters.title.toLowerCase()) : true) &&
+         (d.tipoReclamo ? d.tipoReclamo.toLowerCase().includes(filters.type.toLowerCase()) : true)
   );
 
   const renderReclamoItem = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('ReclamoDetail', { reclamo: item})}>
+    <TouchableOpacity onPress={() => navigation.navigate('ReclamoDetail', { reclamo: item })}>
       <View style={styles.reclamoItem}>
         <Text style={styles.reclamoTitle}>{item.desperfecto || 'Sin título'}</Text>
         <Text style={styles.reclamoDescription}>{item.descripcion || 'Sin descripción'}</Text>
@@ -40,15 +35,20 @@ const filteredReclamos = reclamos.filter(
     </TouchableOpacity>
   );
 
+  const clearFilters = () => {
+    setFilters({ title: '', type: '' });
+    setFilterModalVisible(false);
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.filterButton} onPress={() => setFilterModalVisible(true)}>
-        <Ionicons name="filter" size={24} color="white" />
+        <Ionicons name="filter-outline" size={24} color="white" />
       </TouchableOpacity>
       <FlatList
         data={filteredReclamos}
         renderItem={renderReclamoItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={item => item.idReclamo.toString()}
         contentContainerStyle={styles.listContentContainer}
         ListFooterComponent={() => <View style={{ height: 20 }} />}
       />
@@ -75,13 +75,32 @@ const filteredReclamos = reclamos.filter(
         <View style={styles.modalContainer}>
           <View style={styles.modalView}>
             <Text style={styles.modalTitle}>Filtrar Reclamos</Text>
-            <TextInput style={styles.input} placeholder="Titulo" placeholderTextColor="#9A9A9A" />
-            <TextInput style={styles.input} placeholder="Tipo" placeholderTextColor="#9A9A9A" />
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => setFilterModalVisible(false)}
-            >
-              <Text style={styles.closeButtonText}>Aplicar</Text>
+            <TextInput
+              placeholder="Desperfecto"
+              style={styles.input}
+              value={filters.title}
+              onChangeText={text => setFilters({ ...filters, title: text })}
+              placeholderTextColor="#9A9A9A"
+            />
+            <RNPickerSelect
+              onValueChange={(value) => setFilters({ ...filters, type: value })}
+              items={[
+                { label: 'ACTIVA', value: 'ACTIVA' },
+                { label: 'CERRADA', value: 'CERRADA' },
+                // Añadir más tipos según sea necesario
+              ]}
+              style={pickerSelectStyles}
+              placeholder={{
+                label: 'Seleccione Tipo',
+                value: '',
+              }}
+              value={filters.type}
+            />
+            <TouchableOpacity style={styles.closeButton} onPress={() => setFilterModalVisible(false)}>
+              <Text style={styles.closeButtonText}>Aplicar Filtros</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.clearButton} onPress={clearFilters}>
+              <Text style={styles.clearButtonText}>Eliminar Filtros</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -170,7 +189,8 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   input: {
-    height: 40,
+    height: 50,
+    fontSize: 17,
     backgroundColor: '#1F1F1F',
     borderRadius: 10,
     paddingHorizontal: 10,
@@ -187,8 +207,35 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
   },
+  clearButton: {
+    backgroundColor: '#FF0000',
+    padding: 10,
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  clearButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+  },
+});
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    height: 40,
+    backgroundColor: '#1F1F1F',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    color: '#FFFFFF',
+    marginBottom: 20,
+  },
+  inputAndroid: {
+    height: 40,
+    backgroundColor: '#1F1F1F',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    color: '#FFFFFF',
+    marginBottom: 20,
+  },
 });
 
 export default ReclamosScreen;
-
-
