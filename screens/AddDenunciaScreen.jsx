@@ -86,7 +86,7 @@ const AddDenunciaScreen = ({ navigation }) => {
         formData.append('causa', causa);
         formData.append('lugar', lugar);
         formData.append('denuncianteId', denuncianteId);
-
+    
         if (denunciaTipo === 'DENUNCIA_SITIO' && denunciado) {
             formData.append('sitioId', denunciado);
         } else if (denunciaTipo === 'DENUNCIA_VECINO' && denunciado) {
@@ -94,16 +94,15 @@ const AddDenunciaScreen = ({ navigation }) => {
         } else if (denunciaTipo === 'DENUNCIA_INSPECTOR' && denunciado) {
             formData.append('inspectorId', denunciado);
         }
-
+    
         pruebas.forEach((file, index) => {
-            const fileToUpload = {
+            formData.append('pruebas', {
                 uri: file.uri,
-                type: file.mimeType || 'application/octet-stream',
-                name: file.name || `file-${index}`
-            };
-            formData.append('file', fileToUpload);
+                type: file.type,
+                name: file.name
+            });
         });
-
+    
         try {
             const response = await axios.post('http://192.168.0.244:8080/api/denuncias/upload', formData, {
                 headers: {

@@ -4,7 +4,7 @@ import { fetchDenunciaById } from '../api/denuncias';
 
 const DenunciaDetailScreen = ({ route, navigation }) => {
   const { denuncia } = route.params;
-
+  console.log(denuncia);
 
 
   return (
@@ -51,7 +51,7 @@ const DenunciaDetailScreen = ({ route, navigation }) => {
 
       {denuncia.inspector && (
         <View style={styles.detailContainer}>
-          <Text style={styles.label}>Inspector:</Text>
+          <Text style={styles.label}>Inspector Denunciado:</Text>
           <Text style={styles.value}>{`${denuncia.inspector.nombre} ${denuncia.inspector.apellido}`}</Text>
         </View>
       )}
