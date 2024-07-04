@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const Drawer = createDrawerNavigator();
@@ -23,18 +24,29 @@ const CustomDrawerContent = (props) => {
 };
 
 const InspectorHomeScreen = ({ navigation }) => {
-  const [userName, setUserName] = useState(''); // Este estado almacenará el nombre del usuario
+  const [reclamos, setReclamos] = useState([]);
 
   useEffect(() => {
-    // Simulación de la obtención del nombre del usuario desde la base de datos
-    // Reemplazar esto con la lógica de obtención real de datos
-    const fetchUserName = async () => {
-      const fetchedName = 'John Doe'; // Supongamos que obtuvimos este nombre desde la base de datos
-      setUserName(fetchedName);
+    const fetchReclamos = async () => {
+      try {
+        const response = await axios.get('http://192.168.0.244:8080/api/reclamos');
+        setReclamos(response.data);
+      } catch (error) {
+        console.error('Error fetching reclamos:', error);
+      }
     };
 
-    fetchUserName();
+    fetchReclamos();
   }, []);
+
+  const renderReclamoItem = ({ item }) => (
+    <TouchableOpacity onPress={() => navigation.navigate('ReclamoDetail', { reclamo: item })}>
+      <View style={styles.reclamoItem}>
+        <Text style={styles.reclamoTitle}>{item.desperfecto}</Text>
+        <Text style={styles.reclamoDescription}>{item.descripcion}</Text>
+      </View>
+    </TouchableOpacity>
+  );
 
   return (
     <View style={styles.container}>
@@ -47,18 +59,15 @@ const InspectorHomeScreen = ({ navigation }) => {
           <Icon name="notifications" size={30} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
-      <View style={styles.content}>
-        <Text style={styles.welcomeMessage}>Bienvenido Inspector {userName}</Text>
-      </View>
-      <View style={styles.menu}>
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => navigation.navigate('AddReclamo')}
-        >
-          <Icon name="document-text" size={30} color="#FFFFFF" />
-          <Text style={styles.menuLabel}>Añadir Reclamo</Text>
-        </TouchableOpacity>
-      </View>
+      <FlatList
+        data={reclamos}
+        renderItem={renderReclamoItem}
+        keyExtractor={item => item.idReclamo.toString()}
+        contentContainerStyle={styles.listContentContainer}
+      />
+      <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('AddReclamo')}>
+        <Text style={styles.addButtonText}>Añadir Reclamo</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -88,32 +97,40 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  listContentContainer: {
+    paddingHorizontal: 10,
+    paddingTop: 20,
+    paddingBottom: 100, // Adjusted padding to ensure space for the add button
   },
-  welcomeMessage: {
-    fontSize: 24,
-    color: '#FFFFFF',
-    marginBottom: 20,
-  },
-  menu: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    padding: 20,
+  reclamoItem: {
     backgroundColor: '#333333',
-  },
-  menuItem: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 10,
+    paddingVertical: 20,
+    paddingHorizontal: 15,
+    marginVertical: 8,
     borderRadius: 10,
+    marginHorizontal: 10,
   },
-  menuLabel: {
+  reclamoTitle: {
+    fontSize: 18,
+    color: '#FFFFFF',
+  },
+  reclamoDescription: {
+    fontSize: 14,
+    color: '#9A9A9A',
+  },
+  addButton: {
+    backgroundColor: '#007BFF',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    right: 20,
+  },
+  addButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
-    marginTop: 5,
   },
   drawerContent: {
     backgroundColor: '#1F1F1F',
