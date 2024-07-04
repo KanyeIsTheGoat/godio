@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   },
   headerImage: {
     width: '100%',
-    height: 400,
+    height: 300,
     resizeMode: 'cover',
     marginBottom: 20,
   },
