@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Modal, TextInput, Image, ScrollView, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { fetchPromociones } from '../api/promociones';
+import axios from 'axios';
 
 const { width: screenWidth } = Dimensions.get('window');
 
 const PublicoScreen = ({ navigation }) => {
-  const [filterModalVisible, setFilterModalVisible] = useState(false);
-  const [filters, setFilters] = useState({ title: '', type: '' });
   const [promociones, setPromociones] = useState([]);
   const [images, setImages] = useState([
     require('../assets/sani.png')
@@ -16,8 +14,8 @@ const PublicoScreen = ({ navigation }) => {
   useEffect(() => {
     const loadPromociones = async () => {
       try {
-        const data = await fetchPromociones();
-        setPromociones(data);
+        const response = await axios.get('http://192.168.0.244:8080/api/promociones');
+        setPromociones(response.data);
       } catch (error) {
         console.error("Error cargando promociones", error);
       }
@@ -25,11 +23,6 @@ const PublicoScreen = ({ navigation }) => {
 
     loadPromociones();
   }, []);
-
-  const filteredPromociones = promociones.filter(
-    d => (d.titulo ? d.titulo.includes(filters.title) : true) &&
-         (d.tipoPromocion ? d.tipoPromocion.includes(filters.type) : true)
-  );
 
   const renderPromocionItem = ({ item }) => (
     <TouchableOpacity onPress={() => navigation.navigate('PromocionDetail', { promocion: item })}>
@@ -53,48 +46,13 @@ const PublicoScreen = ({ navigation }) => {
         ))}
       </ScrollView>
       <Text style={styles.subTitle}>Descubre las mejores promociones de la zona!</Text>
-      <TouchableOpacity style={styles.filterButton} onPress={() => setFilterModalVisible(true)}>
-        <Ionicons name="filter" size={24} color="white" />
-      </TouchableOpacity>
       <FlatList
-        data={filteredPromociones}
+        data={promociones}
         renderItem={renderPromocionItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.idPromocion.toString()}
         contentContainerStyle={styles.listContentContainer}
         ListFooterComponent={() => <View style={{ height: 20 }} />}
       />
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={filterModalVisible}
-        onRequestClose={() => setFilterModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalTitle}>Filtros</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Buscar por titulo"
-              placeholderTextColor="#9A9A9A"
-              value={filters.title}
-              onChangeText={(text) => setFilters({ ...filters, title: text })}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Filtrar por tipo"
-              placeholderTextColor="#9A9A9A"
-              value={filters.type}
-              onChangeText={(text) => setFilters({ ...filters, type: text })}
-            />
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => setFilterModalVisible(false)}
-            >
-              <Text style={styles.closeButtonText}>Aplicar</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
     </View>
   );
 };
@@ -153,48 +111,6 @@ const styles = StyleSheet.create({
   promocionDescription: {
     fontSize: 14,
     color: '#9A9A9A',
-  },
-  filterButton: {
-    position: 'absolute',
-    top: 20,
-    right: 20,
-    zIndex: 1,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalView: {
-    width: 300,
-    backgroundColor: '#333333',
-    borderRadius: 10,
-    padding: 20,
-    alignItems: 'center',
-  },
-  modalTitle: {
-    fontSize: 20,
-    marginBottom: 10,
-    color: '#FFFFFF',
-  },
-  input: {
-    height: 40,
-    backgroundColor: '#1F1F1F',
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    color: '#FFFFFF',
-    width: '100%',
-    marginBottom: 20,
-  },
-  closeButton: {
-    backgroundColor: '#007BFF',
-    padding: 10,
-    borderRadius: 10,
-  },
-  closeButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
   },
 });
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
-//import { fetchReclamosByUser } from '../api/reclamos';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MisReclamosScreen = ({ navigation }) => {
   const [reclamos, setReclamos] = useState([]);
@@ -9,9 +10,15 @@ const MisReclamosScreen = ({ navigation }) => {
   useEffect(() => {
     const loadReclamos = async () => {
       try {
-        const userId = 1; // Replace with logic to get the logged-in user's ID
-        const data = await fetchReclamosByUser(userId);
-        setReclamos(data);
+        const user = JSON.parse(await AsyncStorage.getItem('user'));
+        if (user) {
+          const url = user.role === 'INSPECTOR'
+            ? `http://192.168.0.244:8080/api/reclamos/inspector/${user.id}`
+            : `http://192.168.0.244:8080/api/reclamos/vecino/${user.id}`;
+          const response = await axios.get(url);
+          setReclamos(response.data);
+          console.log(response.data);
+        }
       } catch (error) {
         console.error("Error loading reclamos", error);
       } finally {
@@ -23,10 +30,10 @@ const MisReclamosScreen = ({ navigation }) => {
   }, []);
 
   const renderReclamoItem = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('ReclamoDetail', { id: item.id })}>
+    <TouchableOpacity onPress={() => navigation.navigate('ReclamoDetail', { reclamo: item })}>
       <View style={styles.reclamoItem}>
-        <Text style={styles.reclamoTitle}>{item.title}</Text>
-        <Text style={styles.reclamoDescription}>{item.description}</Text>
+        <Text style={styles.reclamoTitle}>{item.descripcion || 'Sin descripción'}</Text>
+        <Text style={styles.reclamoDescription}>{item.idReclamo}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -53,7 +60,7 @@ const MisReclamosScreen = ({ navigation }) => {
       <FlatList
         data={reclamos}
         renderItem={renderReclamoItem}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={item => item.idReclamo.toString()}
       />
     </View>
   );

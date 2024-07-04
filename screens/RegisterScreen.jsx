@@ -12,7 +12,7 @@ const RegisterScreen = ({ navigation }) => {
 
   const handleRegister = async () => {
     try {
-      const response = await axios.post('http://192.168.0.18:8080/register/vecino', {
+      const response = await axios.post('http://192.168.0.244:8080/register/vecino', {
         documento, nombre, apellido, direccion, email
       });
       setMessage(response.data);

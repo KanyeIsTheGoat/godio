@@ -1,24 +1,34 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
-const PromocionDetailScreen = ({ route, navigation }) => {
+const PromocionDetailScreen = ({ route }) => {
   const { promocion } = route.params;
+  console.log(promocion);
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>{promocion.titulo}</Text>
-      </View>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.title}>{promocion.titulo || 'Sin título'}</Text>
       <View style={styles.detailContainer}>
         <Text style={styles.label}>Descripción:</Text>
-        <Text style={styles.value}>{promocion.descripcion}</Text>
+        <Text style={styles.value}>{promocion.descripcion || 'Sin descripción'}</Text>
+      </View>
+      <View style={styles.detailContainer}>
         <Text style={styles.label}>Dirección:</Text>
-        <Text style={styles.value}>{promocion.direccion}</Text>
+        <Text style={styles.value}>{promocion.direccion || 'Sin dirección'}</Text>
+      </View>
+      <View style={styles.detailContainer}>
         <Text style={styles.label}>Horarios:</Text>
-        <Text style={styles.value}>{promocion.horarios}</Text>
+        <Text style={styles.value}>{promocion.horarios || 'Sin horarios'}</Text>
+      </View>
+      <View style={styles.detailContainer}>
         <Text style={styles.label}>Teléfono:</Text>
-        <Text style={styles.value}>{promocion.contacto}</Text>
+        <Text style={styles.value}>{promocion.contacto || 'Sin contacto'}</Text>
+      </View>
+      <View style={styles.detailContainer}>
+        <Text style={styles.label}>Tipo de Promoción:</Text>
+        <Text style={styles.value}>{promocion.tipoPromocion || 'Sin tipo'}</Text>
+      </View>
+      <View style={styles.detailContainer}>
         <Text style={styles.label}>Fotos:</Text>
         {promocion.photos && promocion.photos.length > 0 ? (
           promocion.photos.map((photo, index) => (
@@ -36,37 +46,32 @@ const PromocionDetailScreen = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
+    padding: 20,
     backgroundColor: '#1F1F1F',
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#333333',
-  },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
     color: '#FFFFFF',
-    marginLeft: 10,
   },
   detailContainer: {
-    padding: 16,
-    backgroundColor: '#333333',
-    borderRadius: 10,
-    margin: 16,
+    marginBottom: 20,
   },
   label: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1E90FF',
-    marginTop: 10,
+    color: '#9A9A9A',
+    marginBottom: 5,
   },
   value: {
     fontSize: 16,
     color: '#FFFFFF',
-    marginBottom: 10,
+    backgroundColor: '#333333',
+    padding: 10,
+    borderRadius: 10,
   },
   imageContainer: {
     justifyContent: 'center',

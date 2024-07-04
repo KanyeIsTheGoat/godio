@@ -19,10 +19,6 @@ const DenunciaDetailScreen = ({ route, navigation }) => {
         <Text style={styles.value}>{denuncia.estadoDenuncia}</Text>
       </View>
       <View style={styles.detailContainer}>
-        <Text style={styles.label}>Tipo:</Text>
-        <Text style={styles.value}>{denuncia.tipoDenuncia}</Text>
-      </View>
-      <View style={styles.detailContainer}>
         <Text style={styles.label}>Causa:</Text>
         <Text style={styles.value}>{denuncia.causa || 'Sin causa'}</Text>
       </View>

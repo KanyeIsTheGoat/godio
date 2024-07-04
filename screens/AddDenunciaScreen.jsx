@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, ScrollView, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, ScrollView, Alert, Modal } from 'react-native';
 import axios from 'axios';
 import * as DocumentPicker from 'expo-document-picker';
 import RNPickerSelect from 'react-native-picker-select';
@@ -18,6 +18,7 @@ const AddDenunciaScreen = ({ navigation }) => {
     const [denunciado, setDenunciado] = useState(null);
     const [denuncianteId, setDenuncianteId] = useState(null);
     const [opcionesDenunciado, setOpcionesDenunciado] = useState([]);
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -127,6 +128,19 @@ const AddDenunciaScreen = ({ navigation }) => {
         </View>
     );
 
+    const showDeclarationModal = () => {
+        setIsModalVisible(true);
+    };
+
+    const hideDeclarationModal = () => {
+        setIsModalVisible(false);
+    };
+
+    const handleConfirmDeclaration = () => {
+        hideDeclarationModal();
+        handleSubmit();
+    };
+
     return (
         <ScrollView style={styles.container}>
             <Text style={styles.title}>Crear Denuncia</Text>
@@ -192,13 +206,37 @@ const AddDenunciaScreen = ({ navigation }) => {
                 keyExtractor={(item) => item.uri}
             />
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.buttonAccept} onPress={handleSubmit}>
+                <TouchableOpacity style={styles.buttonAccept} onPress={showDeclarationModal}>
                     <Text style={styles.buttonText}>Aceptar</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.buttonCancel} onPress={() => navigation.goBack()}>
                     <Text style={styles.buttonText}>Cancelar</Text>
                 </TouchableOpacity>
             </View>
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={isModalVisible}
+                onRequestClose={hideDeclarationModal}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>Declaración Jurada</Text>
+                        <Text style={styles.modalText}>
+                            Al enviar esta denuncia, declaro bajo juramento que toda la información proporcionada es verdadera y precisa a mi leal saber y entender.
+                        </Text>
+                        <View style={styles.modalButtonContainer}>
+                            <TouchableOpacity style={styles.modalButtonAccept} onPress={handleConfirmDeclaration}>
+                                <Text style={styles.modalButtonText}>Confirmar</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.modalButtonCancel} onPress={hideDeclarationModal}>
+                                <Text style={styles.modalButtonText}>Cancelar</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </ScrollView>
     );
 };
@@ -293,6 +331,59 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#fff',
         fontSize: 18,
+        fontWeight: 'bold',
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        width: 300,
+        backgroundColor: '#333333',
+        borderRadius: 10,
+        padding: 20,
+        alignItems: 'center',
+    },
+    modalTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#FFFFFF',
+        marginBottom: 15,
+    },
+    modalText: {
+        fontSize: 16,
+        color: '#FFFFFF',
+        textAlign: 'center',
+        marginBottom: 20,
+    },
+    modalButtonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+    },
+    modalButtonAccept: {
+        backgroundColor: '#007BFF',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 10,
+        alignItems: 'center',
+        flex: 1,
+        marginRight: 10,
+    },
+    modalButtonCancel: {
+        backgroundColor: '#dc3545',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 10,
+        alignItems: 'center',
+        flex: 1,
+        marginLeft: 10,
+    },
+    modalButtonText: {
+        color: '#fff',
+        fontSize: 16,
         fontWeight: 'bold',
     },
 });

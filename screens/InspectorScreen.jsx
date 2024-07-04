@@ -13,10 +13,10 @@ const CustomDrawerContent = (props) => {
   return (
     <DrawerContentScrollView {...props} style={styles.drawerContent}>
       <DrawerItemList {...props} />
-      <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('AddReclamo')}>
-        <Text style={styles.drawerLabel}>Añadir Reclamo</Text>
+      <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('MisReclamos')}>
+        <Text style={styles.drawerLabel}>Mis Reclamos</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('Login')}>
+      <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('Welcome')}>
         <Text style={styles.drawerLabel}>Cerrar Sesión</Text>
       </TouchableOpacity>
     </DrawerContentScrollView>
@@ -31,6 +31,7 @@ const InspectorHomeScreen = ({ navigation }) => {
       try {
         const response = await axios.get('http://192.168.0.244:8080/api/reclamos');
         setReclamos(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error('Error fetching reclamos:', error);
       }
@@ -75,7 +76,7 @@ const InspectorHomeScreen = ({ navigation }) => {
 const InspectorNavigator = () => {
   return (
     <Drawer.Navigator drawerContent={(props) => <CustomDrawerContent {...props} />} screenOptions={{ drawerStyle: styles.drawerStyle }}>
-      <Drawer.Screen name="InspectorHome" component={InspectorHomeScreen} options={{ headerShown: false }} />
+      <Drawer.Screen name="Inspector Home" component={InspectorHomeScreen} options={{ headerShown: false }} />
     </Drawer.Navigator>
   );
 };

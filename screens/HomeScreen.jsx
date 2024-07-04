@@ -15,17 +15,11 @@ const CustomDrawerContent = (props) => {
   return (
     <DrawerContentScrollView {...props} style={styles.drawerContent}>
       <DrawerItemList {...props} />
-      <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('Profile')}>
-        <Text style={styles.drawerLabel}>Perfil</Text>
+      <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('MisDenuncias')}>
+        <Text style={styles.drawerLabel}>Mis Denuncias</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('Promociones')}>
-        <Text style={styles.drawerLabel}>Promociones</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('Denuncias')}>
-        <Text style={styles.drawerLabel}>Denuncias</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('Reclamos')}>
-        <Text style={styles.drawerLabel}>Reclamos</Text>
+      <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('MisReclamos')}>
+        <Text style={styles.drawerLabel}>Mis Reclamos</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.drawerItem} onPress={() => navigation.navigate('Login')}>
         <Text style={styles.drawerLabel}>Cerrar Sesión</Text>

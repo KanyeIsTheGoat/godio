@@ -42,4 +42,14 @@ export const fetchDenunciaById = async (id) => {
   }
 };
 
-export default { fetchDenuncias, createDenuncia, fetchDenunciaById};
+export const fetchDenunciasByUser = async (userId) => {
+  try {
+    const response = await axios.get(`http://192.168.0.244:8080/api/denuncias/usuario/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching denuncias", error);
+    throw error;
+  }
+};
+
+export default {fetchDenuncias,createDenuncia,fetchDenunciaById,fetchDenunciasByUser};

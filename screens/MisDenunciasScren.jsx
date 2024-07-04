@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
-import { fetchDenunciasByUser } from '../api/denuncias';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MisDenunciasScreen = ({ navigation }) => {
   const [denuncias, setDenuncias] = useState([]);
@@ -9,9 +10,12 @@ const MisDenunciasScreen = ({ navigation }) => {
   useEffect(() => {
     const loadDenuncias = async () => {
       try {
-        const userId = 1; // Replace with logic to get the logged-in user's ID
-        const data = await fetchDenunciasByUser(userId);
-        setDenuncias(data);
+        const user = JSON.parse(await AsyncStorage.getItem('user'));
+        if (user && user.role === 'VECINO') {
+          const response = await axios.get(`http://192.168.0.244:8080/api/denuncias/denunciante/${user.id}`);
+          setDenuncias(response.data);
+          console.log(response.data);
+        }
       } catch (error) {
         console.error("Error loading denuncias", error);
       } finally {
@@ -23,10 +27,10 @@ const MisDenunciasScreen = ({ navigation }) => {
   }, []);
 
   const renderDenunciaItem = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('DenunciaDetail', { id: item.id })}>
+    <TouchableOpacity onPress={() => navigation.navigate('DenunciaDetail', { denuncia: item })}>
       <View style={styles.denunciaItem}>
-        <Text style={styles.denunciaTitle}>{item.title}</Text>
-        <Text style={styles.denunciaDescription}>{item.description}</Text>
+        <Text style={styles.denunciaTitle}>{item.titulo || 'Sin título'}</Text>
+        <Text style={styles.denunciaDescription}>{item.idDenuncia || 'Sin descripción'}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -53,7 +57,7 @@ const MisDenunciasScreen = ({ navigation }) => {
       <FlatList
         data={denuncias}
         renderItem={renderDenunciaItem}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={item => item.idDenuncia.toString()}
       />
     </View>
   );

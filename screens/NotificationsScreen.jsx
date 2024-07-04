@@ -1,21 +1,68 @@
-import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Ionicons } from '@expo/vector-icons';
 
 const NotificationsScreen = () => {
-  // Sample data for notifications
-  const notifications = [
-    { id: '1', title: 'New Update Available', description: 'A new update has been released for the app.' },
-    { id: '2', title: 'Promotion Alert', description: 'Check out the latest promotions in your area.' },
-    { id: '3', title: 'Service Disruption', description: 'There will be a planned maintenance tomorrow.' },
-    // Add more notifications as needed
-  ];
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [userRole, setUserRole] = useState('');
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const userData = await AsyncStorage.getItem('user');
+        if (userData) {
+          const parsedData = JSON.parse(userData);
+          setUserRole(parsedData.role);
+
+          let response;
+          if (parsedData.role === 'VECINO') {
+            response = await axios.get(`http://192.168.0.244:8080/api/notificaciones/vecino/${parsedData.id}`);
+          } else if (parsedData.role === 'INSPECTOR') {
+            response = await axios.get(`http://192.168.0.244:8080/api/notificaciones/inspector/${parsedData.id}`);
+          }
+
+          if (response) {
+            setNotifications(response.data);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
+
+  const handleDeleteNotification = async (id) => {
+    try {
+      await axios.delete(`http://192.168.0.244:8080/api/notificaciones/${id}`);
+      setNotifications(notifications.filter(notification => notification.idNotificacion !== id));
+    } catch (error) {
+      console.error('Error deleting notification:', error);
+    }
+  };
 
   const renderNotificationItem = ({ item }) => (
     <View style={styles.notificationItem}>
-      <Text style={styles.notificationTitle}>{item.title}</Text>
-      <Text style={styles.notificationDescription}>{item.description}</Text>
+      <Text style={styles.notificationTitle}>{item.descripcion}</Text>
+      <TouchableOpacity onPress={() => handleDeleteNotification(item.idNotificacion)} style={styles.deleteButton}>
+        <Ionicons name="trash" size={24} color="#FF0000" />
+      </TouchableOpacity>
     </View>
   );
+
+  if (loading) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#007BFF" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -23,7 +70,8 @@ const NotificationsScreen = () => {
       <FlatList
         data={notifications}
         renderItem={renderNotificationItem}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.idNotificacion.toString()}
+        ListEmptyComponent={<Text style={styles.emptyMessage}>No hay notificaciones.</Text>}
       />
     </View>
   );
@@ -43,6 +91,9 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   notificationItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     padding: 16,
     backgroundColor: '#333333',
     borderRadius: 10,
@@ -52,10 +103,21 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#FFFFFF',
+    flex: 1,
   },
-  notificationDescription: {
-    fontSize: 16,
+  deleteButton: {
+    marginLeft: 10,
+  },
+  emptyMessage: {
+    fontSize: 18,
     color: '#9A9A9A',
+    textAlign: 'center',
+    marginTop: 20,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
