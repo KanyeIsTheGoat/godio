@@ -16,7 +16,7 @@ const WelcomeScreen = ({ navigation }) => {
         <TouchableOpacity style={styles.inspectorButton} onPress={() => navigation.navigate('InspectorHome')}>
           <Text style={styles.inspectorButtonText}>Entrar como Inspector</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Publico')}>
           <Text style={styles.guestText}>Entrar como invitado</Text>
         </TouchableOpacity>
       </View>

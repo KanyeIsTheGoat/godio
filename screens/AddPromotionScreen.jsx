@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import RNPickerSelect from 'react-native-picker-select';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AddPromotionScreen = ({ navigation }) => {
   const [titulo, setTitle] = useState('');
@@ -8,36 +10,69 @@ const AddPromotionScreen = ({ navigation }) => {
   const [direccion, setDireccion] = useState('');
   const [horarios, setHours] = useState('');
   const [contacto, setContact] = useState('');
+  const [sitios, setSitios] = useState([]);
+  const [vecinos, setVecinos] = useState([]);
+  const [tipoPromocion, setPromocion] = useState('');
+  const [vecinoId, setVecinoId] = useState(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const sitioResponse = await axios.get('http://192.168.0.18:8080/api/sitios');
+                setSitios(sitioResponse.data);
+                console.log(sitioResponse.data);
+
+                const vecinoResponse = await axios.get('http://192.168.0.18:8080/api/vecinos');
+                setVecinos(vecinoResponse.data);
+                console.log(vecinoResponse.data);
+
+                const userData = await AsyncStorage.getItem('user');
+                if (userData) {
+                    const parsedData = JSON.parse(userData);
+                    setVecinoId(parsedData.id);
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+  const handleSubmit = async () => {
+          const formData = new FormData();
+          formData.append('titulo', titulo);
+          formData.append('descripcion', descripcion);
+          formData.append('tipoPromocion', tipoPromocion);
+          formData.append('contacto', contacto);
+          formData.append('direccion', direccion);
+          formData.append('horarios', horarios);
+          formData.append('sitios', setSitios);
+          formData.append('vecinoId', vecinoId);
 
 
+          {/*}pruebas.forEach((file, index) => {
+              formData.append('pruebas', {
+                  uri: file.uri,
+                  type: file.type,
+                  name: file.name
+              });
+          });*/}
 
-  const handleAccept = async () => {
-    try {
-      const response = await fetch('http://192.168.0.18:8080/api/promociones', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          descripcion : descripcion,
-          titulo : titulo,
-          horarios : horarios,
-          direccion : direccion,
-          contacto : contacto
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Error al crear la promoción');
-      }
-
-      Alert.alert('Promoción Creada', 'La promoción ha sido creada exitosamente.');
-      navigation.goBack(); // Regresar a la pantalla anterior
-    } catch (error) {
-      console.error('Error al crear la promoción:', error);
-      Alert.alert('Error', 'Hubo un problema al intentar crear la promoción. Por favor, intenta nuevamente más tarde.');
-    }
-  };
+          try {
+              const response = await axios.post('http://192.168.0.18:8080/api/promociones/upload', formData, {
+                  headers: {
+                      'Content-Type': 'multipart/form-data',
+                  },
+              });
+              console.log('Promoción added successfully', response.data);
+              Alert.alert('Promoción Añadida', 'La promoción se ha añadido correctamente.');
+              navigation.goBack();
+          } catch (error) {
+              console.error('There was an error adding the promoción!', error);
+              Alert.alert('Error', 'Hubo un error al añadir la promoción.');
+          }
+      };
 
   const handleCancel = () => {
     navigation.goBack(); // Regresar a la pantalla anterior
@@ -90,13 +125,26 @@ const AddPromotionScreen = ({ navigation }) => {
         onChangeText={setContact}
         placeholderTextColor="#AAAAAA"
       />
+
+      <View style={styles.pickerContainer}>
+       <Text style={styles.pickerLabel}>Seleccionar:</Text>
+       <RNPickerSelect
+        onValueChange={(value) => {
+               console.log(value);
+                 setSitios(value);
+                   }}
+
+               style={pickerSelectStyles}
+                  placeholder={{ label: "Seleccionar sitio", value: null }}/>
+                  </View>
+
       <Text style={styles.photoLabel}>Fotos (máx. 5):</Text>
       <TouchableOpacity style={styles.photoButton} onPress={handleAddPhoto}>
         <Ionicons name="camera" size={24} color="#FFFFFF" />
       </TouchableOpacity>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.buttonAccept} onPress={handleAccept}>
+        <TouchableOpacity style={styles.buttonAccept} onPress={handleSubmit}>
           <Text style={styles.buttonText}>Crear Promoción</Text>
         </TouchableOpacity>
 
@@ -174,6 +222,31 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+});
+
+const pickerSelectStyles = StyleSheet.create({
+    inputIOS: {
+        fontSize: 16,
+        paddingVertical: 12,
+        paddingHorizontal: 10,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 4,
+        color: 'white',
+        paddingRight: 30,
+        backgroundColor: '#333333',
+    },
+    inputAndroid: {
+        fontSize: 16,
+        paddingHorizontal: 10,
+        paddingVertical: 8,
+        borderWidth: 0.5,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        color: 'white',
+        paddingRight: 30,
+        backgroundColor: '#333333',
+    },
 });
 
 export default AddPromotionScreen;
