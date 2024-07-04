@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const { width: screenWidth } = Dimensions.get('window');
 
 const Drawer = createDrawerNavigator();
 
@@ -35,6 +37,14 @@ const CustomDrawerContent = (props) => {
 const HomeScreen = ({ navigation }) => {
   const [activeMenu, setActiveMenu] = useState('');
   const [user, setUser] = useState(null);
+  const [images, setImages] = useState([
+    require('../assets/sani.png')
+  ]);
+  const [services, setServices] = useState([
+    require('../assets/eco.png'),
+    require('../assets/run.png'),
+    require('../assets/tels.png'),
+  ]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -53,7 +63,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.openDrawer()}>
           <Icon name="menu" size={30} color="#FFFFFF" />
@@ -64,8 +74,26 @@ const HomeScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
       <View style={styles.content}>
-        <Text style={styles.welcomeMessage}>Municipalidad de San Isidro</Text>
-        <Image source={require('../assets/municipio.jpg')} style={styles.image} />
+        <Text style={styles.welcomeMessage}>San Isidro Municipio</Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.imageScrollView}
+        >
+          {images.map((image, index) => (
+            <Image key={index} source={image} style={styles.image} />
+          ))}
+        </ScrollView>
+        <Text style={styles.servicesTitle}>Descubre lo Mejor de San Isidro</Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.imageScrollView}
+        >
+          {services.map((service, index) => (
+            <Image key={index} source={service} style={styles.image} />
+          ))}
+        </ScrollView>
       </View>
       <View style={styles.menu}>
         <TouchableOpacity
@@ -99,7 +127,7 @@ const HomeScreen = ({ navigation }) => {
           <Text style={styles.menuLabel}>Reclamos</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -120,13 +148,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 20,
+    padding: 30,
     backgroundColor: '#333333',
   },
   headerTitle: {
-    paddingTop: 50,
     fontSize: 18,
     color: '#FFFFFF',
+    fontFamily: 'San Francisco', // Cambia la fuente aquí
   },
   content: {
     flex: 1,
@@ -139,21 +167,30 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     marginBottom: 20,
     textAlign: 'center',
+    fontFamily: 'Roboto', // Cambia la fuente aquí
+  },
+  imageScrollView: {
+    flexDirection: 'row',
+    marginBottom: 20,
   },
   image: {
-    width: '100%',
+
+    width: screenWidth - 60,
     height: 300,
-    borderRadius: 10,
+    borderRadius: 30,
+    marginHorizontal: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
-  userInfo: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: '#555555',
-    borderRadius: 10,
-  },
-  userText: {
-    fontSize: 18,
+  servicesTitle: {
+    fontSize: 24,
     color: '#FFFFFF',
+    marginBottom: 10,
+    textAlign: 'left',
+    fontFamily: 'Montserrat', // Cambia la fuente aquí
   },
   menu: {
     flexDirection: 'row',
@@ -164,16 +201,16 @@ const styles = StyleSheet.create({
   menuItem: {
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 5,
+    padding: 10,
     borderRadius: 10,
+
   },
-  menuItemActive: {
-    backgroundColor: '#007BFF',
-  },
+
   menuLabel: {
     color: '#FFFFFF',
-    fontSize: 12,
+    fontSize: 14,
     marginTop: 5,
+    fontFamily: 'Roboto', // Cambia la fuente aquí
   },
   drawerContent: {
     backgroundColor: '#1F1F1F',
@@ -184,6 +221,7 @@ const styles = StyleSheet.create({
   drawerLabel: {
     color: '#FFFFFF',
     fontSize: 16,
+    fontFamily: 'Roboto', // Cambia la fuente aquí
   },
   drawerStyle: {
     backgroundColor: '#1F1F1F',
