@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 
 const WelcomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
+      <Image source={require('../assets/sani.png')} style={styles.headerImage} />
       <View style={styles.contentContainer}>
         <Text style={styles.title}>Todo acerca de tu municipio</Text>
         <Text style={styles.subtitle}>Realiza todas las acciones y busca tus lugares preferidos en tu barrio</Text>
@@ -12,9 +13,6 @@ const WelcomeScreen = ({ navigation }) => {
         </TouchableOpacity>
         <TouchableOpacity style={styles.registerButton} onPress={() => navigation.navigate('Register')}>
           <Text style={styles.registerButtonText}>Registrarme</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.inspectorButton} onPress={() => navigation.navigate('InspectorHome')}>
-          <Text style={styles.inspectorButtonText}>Entrar como Inspector</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('Publico')}>
           <Text style={styles.guestText}>Entrar como invitado</Text>
@@ -31,6 +29,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#1F1F1F',
     padding: 20,
+  },
+  headerImage: {
+    width: '100%',
+    height: 400,
+    resizeMode: 'cover',
+    marginBottom: 20,
   },
   contentContainer: {
     flex: 1,
@@ -73,20 +77,6 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   registerButtonText: {
-    color: '#FFFFFF',
-    textAlign: 'center',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  inspectorButton: {
-    backgroundColor: '#28A745',
-    paddingVertical: 15,
-    paddingHorizontal: 15,
-    borderRadius: 100,
-    marginBottom: 10,
-    width: '100%',
-  },
-  inspectorButtonText: {
     color: '#FFFFFF',
     textAlign: 'center',
     fontSize: 16,

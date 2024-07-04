@@ -42,6 +42,7 @@ const HomeScreen = ({ navigation }) => {
   ]);
   const [services, setServices] = useState([
     require('../assets/eco.png'),
+    require('../assets/bocas.png'),
     require('../assets/run.png'),
     require('../assets/tels.png'),
   ]);

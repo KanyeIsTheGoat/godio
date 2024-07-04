@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import axios from 'axios';
 import RNPickerSelect from 'react-native-picker-select';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -13,29 +14,33 @@ const AddPromotionScreen = ({ navigation }) => {
   const [sitios, setSitios] = useState([]);
   const [vecinos, setVecinos] = useState([]);
   const [tipoPromocion, setPromocion] = useState('');
-  const [vecinoId, setVecinoId] = useState(null);
+  const [sitioSeleccionado, setSitioSeleccionado] = useState(null);
+  const [dueno, setDuenoId] = useState(null);
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const sitioResponse = await axios.get('http://192.168.0.18:8080/api/sitios');
-                setSitios(sitioResponse.data);
-                console.log(sitioResponse.data);
+            const fetchSitios = async () => {
+                try {
+                    const sitioResponse = await axios.get('http://192.168.0.18:8080/api/sitios');
+                    const userData = await AsyncStorage.getItem('user');
+                    if (userData) {
+                        const parsedData = JSON.parse(userData);
+                        const userId = parsedData.id;
+                        const filteredSitios = sitioResponse.data.filter(sitio => sitio.propietario.id !== userId);
+                        setSitios(filteredSitios);
+                    }
+                } catch (error) {
+                    console.error('Error fetching sitios:', error);
+                }
+            };
 
-                const vecinoResponse = await axios.get('http://192.168.0.18:8080/api/vecinos');
-                setVecinos(vecinoResponse.data);
-                console.log(vecinoResponse.data);
-
+    const fetchData = async () => {
                 const userData = await AsyncStorage.getItem('user');
                 if (userData) {
                     const parsedData = JSON.parse(userData);
-                    setVecinoId(parsedData.id);
+                    setDuenoId(parsedData.id);
                 }
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
+            };
+        fetchSitios();
         fetchData();
     }, []);
 
@@ -51,6 +56,9 @@ const AddPromotionScreen = ({ navigation }) => {
           formData.append('vecinoId', vecinoId);
 
 
+            if (sitioSeleccionado) {
+                        formData.append('sitioId', sitioSeleccionado);
+                    }
           {/*}pruebas.forEach((file, index) => {
               formData.append('pruebas', {
                   uri: file.uri,
@@ -127,15 +135,13 @@ const AddPromotionScreen = ({ navigation }) => {
       />
 
       <View style={styles.pickerContainer}>
-       <Text style={styles.pickerLabel}>Seleccionar:</Text>
-       <RNPickerSelect
-        onValueChange={(value) => {
-               console.log(value);
-                 setSitios(value);
-                   }}
-
-               style={pickerSelectStyles}
-                  placeholder={{ label: "Seleccionar sitio", value: null }}/>
+                      <Text style={styles.pickerLabel}>Seleccionar Sitio:</Text>
+                      <RNPickerSelect
+                          onValueChange={(value) => setSitioSeleccionado(value)}
+                          items={sitios.map(sitio => ({ label: sitio.direccion, value: sitio.idSitio }))}
+                          style={pickerSelectStyles}
+                          placeholder={{ label: "Seleccionar sitio", value: null }}
+                      />
                   </View>
 
       <Text style={styles.photoLabel}>Fotos (máx. 5):</Text>
