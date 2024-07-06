@@ -17,7 +17,7 @@ const MisDenunciasScreen = ({ navigation }) => {
           console.log(response.data);
         }
       } catch (error) {
-        console.error("Error loading denuncias", error);
+        console.error("Error cargando denuncias", error);
       } finally {
         setLoading(false);
       }

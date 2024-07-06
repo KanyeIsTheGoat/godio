@@ -16,7 +16,7 @@ export const createReclamo = async (reclamo) => {
     const response = await api.post('/reclamos', reclamo);
     return response.data;
   } catch (error) {
-    console.error("Error creating reclamo", error);
+    console.error("Error al crear reclamo", error);
     throw error;
   }
 };

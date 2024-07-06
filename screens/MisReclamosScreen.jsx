@@ -20,7 +20,7 @@ const MisReclamosScreen = ({ navigation }) => {
           console.log(response.data);
         }
       } catch (error) {
-        console.error("Error loading reclamos", error);
+        console.error("Error cargando reclamos", error);
       } finally {
         setLoading(false);
       }

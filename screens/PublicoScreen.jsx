@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 5,
     elevation: 5,
-    resizeMode: 'contain', // Ajusta la imagen para que se vea completa sin recortar
+    resizeMode: 'contain',
   },
   subTitle: {
     fontSize: 24,
@@ -92,9 +92,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   listContentContainer: {
-    paddingBottom: 150, // Ensures space for the add button and menu
+    paddingBottom: 150,
     paddingHorizontal: 10,
-    paddingTop: 60, // Add padding to ensure filter button is not over promotions
+    paddingTop: 60,
   },
   promocionItem: {
     backgroundColor: '#333333',

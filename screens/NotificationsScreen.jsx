@@ -29,7 +29,7 @@ const NotificationsScreen = () => {
           }
         }
       } catch (error) {
-        console.error('Error fetching notifications:', error);
+        console.error('Error al cargar las notificaciones:', error);
       } finally {
         setLoading(false);
       }
@@ -43,7 +43,7 @@ const NotificationsScreen = () => {
       await axios.delete(`http://192.168.0.244:8080/api/notificaciones/${id}`);
       setNotifications(notifications.filter(notification => notification.idNotificacion !== id));
     } catch (error) {
-      console.error('Error deleting notification:', error);
+      console.error('Error al eliminar notificacion:', error);
     }
   };
 

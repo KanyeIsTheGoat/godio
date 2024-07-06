@@ -63,9 +63,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#1F1F1F',
   },
   listContentContainer: {
-    paddingBottom: 150, // Ensures space for the add button and menu
+    paddingBottom: 150,
     paddingHorizontal: 10,
-    paddingTop: 60, // Add padding to ensure filter button is not over promotions
+    paddingTop: 60,
   },
   promocionItem: {
     backgroundColor: '#333333',

@@ -8,7 +8,7 @@ const UserInfoScreen = ({ navigation }) => {
   };
 
   const handleLogout = () => {
-    // Log out logic here
+
     console.log('User logged out');
     navigation.navigate('Login');
   };

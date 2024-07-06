@@ -52,9 +52,9 @@ export default function App() {
         <Stack.Screen name="MisDenuncias" component={MisDenunciasScreen} options={{ title: 'Mis Denuncias' }} />
         <Stack.Screen name="MisReclamos" component={MisReclamosScreen} options={{ title: 'Mis Reclamos' }} />
         <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ title: 'Notificaciones' }} />
-        <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ title: 'Welcome' }} />
+        <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ title: '' }} />
         <Stack.Screen name="Inspector" component={InspectorScreen} options={{ title: 'Inspector' }} />
-        <Stack.Screen name="Publico" component={PublicoScreen} options={{ title: 'Publico' }} />
+        <Stack.Screen name="Publico" component={PublicoScreen} options={{ title: '' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

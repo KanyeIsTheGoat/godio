@@ -23,28 +23,28 @@ const AddDenunciaScreen = ({ navigation }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const sitioResponse = await axios.get('http://192.168.0.244:8080/api/sitios');
+                const sitioResponse = await axios.get('http://192.168.0.18:8080/api/sitios');
                 setSitios(sitioResponse.data);
                 console.log(sitioResponse.data);
-                
-                const vecinoResponse = await axios.get('http://192.168.0.244:8080/api/vecinos');
+
+                const vecinoResponse = await axios.get('http://192.168.0.18:8080/api/vecinos');
                 setVecinos(vecinoResponse.data);
                 console.log(vecinoResponse.data);
-                
-                const inspectorResponse = await axios.get('http://192.168.0.244:8080/api/inspectores');
+
+                const inspectorResponse = await axios.get('http://192.168.0.18:8080/api/inspectores');
                 setInspectores(inspectorResponse.data);
                 console.log(inspectorResponse.data);
-                
+
                 const userData = await AsyncStorage.getItem('user');
                 if (userData) {
                     const parsedData = JSON.parse(userData);
                     setDenuncianteId(parsedData.id);
                 }
             } catch (error) {
-                console.error('Error fetching data:', error);
+                console.error('Error al obtener datos:', error);
             }
         };
-        
+
         fetchData();
     }, []);
 
@@ -70,7 +70,7 @@ const AddDenunciaScreen = ({ navigation }) => {
             let result = await DocumentPicker.getDocumentAsync({ multiple: true });
             setPruebas([...pruebas, ...result.assets]);
         } catch (err) {
-            console.log('Error picking document:', err);
+            console.log('Error obteniendo documento:', err);
         }
     };
 

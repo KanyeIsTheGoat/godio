@@ -63,7 +63,7 @@ const HomeScreen = ({ navigation }) => {
         <TouchableOpacity onPress={() => navigation.openDrawer()}>
           <Icon name="menu" size={30} color="#FFFFFF" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>MuniApp</Text>
+        <Text style={styles.headerTitle}>SIM</Text>
         <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
           <Icon name="notifications" size={30} color="#FFFFFF" />
         </TouchableOpacity>
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     color: '#FFFFFF',
-    fontFamily: 'San Francisco', // Cambia la fuente aquí
+    fontFamily: 'San Francisco',
   },
   content: {
     flex: 1,
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     marginBottom: 20,
     textAlign: 'center',
-    fontFamily: 'Roboto', // Cambia la fuente aquí
+    fontFamily: 'Roboto',
   },
   imageScrollView: {
     flexDirection: 'row',
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     marginBottom: 10,
     textAlign: 'left',
-    fontFamily: 'Montserrat', // Cambia la fuente aquí
+    fontFamily: 'Montserrat',
   },
   menu: {
     flexDirection: 'row',
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 14,
     marginTop: 5,
-    fontFamily: 'Roboto', // Cambia la fuente aquí
+    fontFamily: 'Roboto',
   },
   drawerContent: {
     backgroundColor: '#1F1F1F',
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
   drawerLabel: {
     color: '#FFFFFF',
     fontSize: 16,
-    fontFamily: 'Roboto', // Cambia la fuente aquí
+    fontFamily: 'Roboto',
   },
   drawerStyle: {
     backgroundColor: '#1F1F1F',

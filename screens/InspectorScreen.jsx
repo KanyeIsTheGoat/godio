@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   listContentContainer: {
     paddingHorizontal: 10,
     paddingTop: 20,
-    paddingBottom: 100, // Adjusted padding to ensure space for the add button
+    paddingBottom: 100,
   },
   reclamoItem: {
     backgroundColor: '#333333',

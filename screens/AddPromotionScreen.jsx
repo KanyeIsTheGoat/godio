@@ -40,7 +40,7 @@ const AddPromotionScreen = ({ navigation }) => {
                 const rubroResponse = await axios.get('http://192.168.0.244:8080/api/rubros');
                 setRubros(rubroResponse.data);
             } catch (error) {
-                console.error('Error fetching data:', error);
+                console.error('Error obteniendo datos:', error);
             }
         };
         
@@ -52,7 +52,7 @@ const AddPromotionScreen = ({ navigation }) => {
             let result = await DocumentPicker.getDocumentAsync({ multiple: true });
             setFotos([...fotos, ...result.assets]);
         } catch (err) {
-            console.log('Error picking document:', err);
+            console.log('Error obteniendo documento:', err);
         }
     };
 

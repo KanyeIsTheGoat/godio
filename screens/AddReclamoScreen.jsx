@@ -19,7 +19,7 @@ const AddReclamoScreen = ({ navigation }) => {
     useEffect(() => {
         const fetchSitios = async () => {
             try {
-                const sitioResponse = await axios.get('http://192.168.0.244:8080/api/sitios');
+                const sitioResponse = await axios.get('http://192.168.0.18:8080/api/sitios');
                 const userData = await AsyncStorage.getItem('user');
                 if (userData) {
                     const parsedData = JSON.parse(userData);
@@ -28,7 +28,7 @@ const AddReclamoScreen = ({ navigation }) => {
                     setSitios(filteredSitios);
                 }
             } catch (error) {
-                console.error('Error fetching sitios:', error);
+                console.error('Error al obtener sitios:', error);
             }
         };
 
@@ -51,7 +51,7 @@ const AddReclamoScreen = ({ navigation }) => {
             let result = await DocumentPicker.getDocumentAsync({ multiple: true });
             setFotos([...fotos, ...result.assets]);
         } catch (err) {
-            console.log('Error picking document:', err);
+            console.log('Error al elegir documento:', err);
         }
     };
 
@@ -85,7 +85,7 @@ const AddReclamoScreen = ({ navigation }) => {
         });
 
         try {
-            const response = await axios.post('http://192.168.0.244:8080/api/reclamos/upload', formData, {
+            const response = await axios.post('http://192.168.0.18:8080/api/reclamos/upload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
